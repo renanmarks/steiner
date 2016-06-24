@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <array>
 
 namespace st
 {
@@ -17,6 +18,8 @@ private:
         std::string creator;
         std::string remark;
         std::string problem;
+
+        void print(std::ostream &out) const;
     } comment;
 
     struct Graph
@@ -50,8 +53,28 @@ private:
         std::vector<std::uint32_t> nodes;
     } terminal;
 
+    struct Coordinates
+    {
+        struct Vertex
+        {
+            std::array<double, 3> values;
+        };
+
+        std::vector<Vertex> vertices;
+    };
+
+    bool parseHeader(std::istream &file);
+    void parseCommentSection(std::istream &file);
+    void parseGraphSection(std::istream &file);
+    void parseTerminalsSection(std::istream &file);
+//TODO:    void parseMaximumDegressSection();
+    void parseCoordinatesSection(std::istream &file);
+
 public:
     Data();
+
+    void load(std::istream& file);
+    void print(std::ostream& stream);
 };
 
 }
