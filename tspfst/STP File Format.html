@@ -1,0 +1,351 @@
+<html lang="en"><head>
+<meta name="author" content="Thorsten Koch">
+<meta name="description" content="SteinLib Format Description">
+<meta name="keywords" content="Steiner Tree,STP,SMT,Graph">
+<meta name="date" content="$Date: 2001/05/14 23:48:19 $">
+<meta name="robots" content="index|follow">
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<title>STP File Format</title> 
+</head>
+<body alink="#FF0000" background="STP%20File%20Format_files/steinback3.png" bgcolor="#FFFFFF" link="#0000FF" text="#000000" vlink="#800080">
+<p>
+<!-- <img src="http://www.zib.de/global/images/zib_logo1.gif" -->
+
+<a href="http://www.zib.de/index.en.html">
+   <img src="STP%20File%20Format_files/zib_logo1.gif" alt="Goto ZIB" align="right" border="0" height="118" width="86">
+</a>
+<a href="http://www.winforms.phil.tu-bs.de/winforms">
+   <img src="STP%20File%20Format_files/tulggrbg.gif" alt="Goto TU-Braunschweig" align="right" border="0" height="106" width="92"> 
+</a>
+<a href="http://www.mathematik.tu-darmstadt.de/ags/ag7">
+   <img src="STP%20File%20Format_files/tu-da2.gif" alt="Goto TU-Darmstadt" align="right" border="0" height="110" width="93"> 
+</a>
+</p>  
+<h1>Description of the STP Data Format</h1>
+<p>
+In this section we describe the data format used for the instances.
+For illustration we use an odd wheel with terminal nodes 1, 3, 5 and 7.
+</p>
+<p><img src="STP%20File%20Format_files/wheel2.gif" alt="Odd Wheel"></p>
+<p>
+The following lines show this example in the <i>SteinLib</i> format.
+</p>
+<p>
+<table bgcolor="#E0D010">
+<tbody><tr><td>
+<pre>
+   33D32945 STP File, STP Format Version 1.0
+
+   SECTION Comment
+   Name    "Odd Wheel"
+   Creator "T. Koch, A. Martin and S. Voss"
+   Remark  "Example used to describe the STP data format"   
+   END
+
+   SECTION Graph
+   Nodes 7
+   Edges 9
+   E 1 2 1
+   E 1 4 1
+   E 1 6 1
+   E 2 3 1
+   E 3 4 1
+   E 4 5 1
+   E 5 6 1
+   E 6 7 1
+   E 7 2 1
+   END
+
+   SECTION Terminals
+   Terminals 4
+   T 1
+   T 3
+   T 5
+   T 7
+   END
+
+   SECTION Coordinates
+   DD 1  80 50
+   DD 2  30 50
+   DD 3  55  5
+   DD 4 105  5
+   DD 5 130 50
+   DD 6 105 95
+   DD 7  55 95
+   END
+
+   EOF
+</pre>
+</td></tr>
+</tbody></table>
+</p>
+<p>
+The format is line (or row) oriented. Each line is terminated with
+a line-feed. Everything on a line after (and including) a
+<kbd>#</kbd> is ignored. Blank lines are ignored. The first line of
+each data file is supposed to be
+</p>
+<p>
+<code>
+33D32945 STP File, STP Format Version 1.0
+</code>
+</p>
+<p>
+It contains a so-called magic number as an identification key. It
+provides an assertion that the data file is indeed a file in the 
+<i>SteinLib</i> format. You add this line
+<table bgcolor="#E0D010">
+<tbody><tr><td>
+<pre>
+   0 string 33D32945  STP Steiner Tree Problem File         
+</pre>
+</td></tr>
+</tbody></table>
+to your magic(4) file to let the file(1) command recognise STP files.
+</p>
+<p>
+Then, the file is divided into sections. A section starts with the
+keyword <kbd>SECTION</kbd> followed by the name of the section and
+ends with a line containing the keyword <kbd>END</kbd>. The file ends
+with the keyword <kbd>EOF</kbd>.
+The possible sections are shown in the Table and have to appear
+in the given order.
+</p><p>
+<table bgcolor="#DDDDDD" border="">
+<tbody><tr><td><kbd>Comment</kbd></td>
+    <td>Gives general information about the problem
+        instance, like name and creator.</td></tr>
+<tr><td><kbd>Graph</kbd></td>
+    <td>Here the graph itself is specified.</td></tr>
+<tr><td><kbd>Terminals</kbd></td>
+    <td>Lists the terminals for the problem instance.</td></tr>
+<tr><td><kbd>Coordinates</kbd></td>
+    <td>This is a mandatory section giving coordinates for the nodes 
+        of the graph. This section is only necessary for drawing.</td></tr>
+</tbody></table>
+</p><p>
+Each line within a section starts with a keyword, indicating the type
+of the line.  Depending on the section different keywords are allowed.
+Each keyword follows a number of fields in the line. Fields can be
+either a string, i.e. an arbitrary string enclosed in double quotes, or
+a number, where integer numbers are allowed only.
+</p>
+<p>
+The following Table lists the keywords for each section.
+The Column <i>Fields</i> shows how many strings (S) or numbers (N) are
+required.
+</p>
+<table bgcolor="#DDDDDD" border="">
+<tbody><tr><th align="left">Name</th><th align="left">Fields</th>
+    <th align="left">Description</th></tr>
+<tr><td colspan="3">Section <kbd>Comment</kbd></td></tr>
+<tr><td><kbd>Name</kbd></td><td align="center">1 S</td>
+    <td>The name of the instance</td></tr>
+<tr><td><kbd>Date</kbd></td><td align="center">1 S</td>
+    <td>The date of the creation of the instance</td></tr>
+<tr><td><kbd>Creator</kbd></td><td align="center">1 S</td>
+    <td>Who did it</td></tr>
+<tr><td><kbd>Remark</kbd></td><td align="center">1 S</td>
+    <td>Some other information</td></tr>
+<tr><td><kbd>Problem</kbd></td><td align="center">1 S</td>
+    <td>Default: Steiner Tree Problem in Graphs <br>
+"Euclidean Steiner Tree Problem", "Rectilinear Steiner Minimum Tree", 
+"Obstacle-Avoiding Rectilinear Steiner Minimum Tree", "Prize-Collecting 
+Steiner Problem in Graphs", "Maximum Node Weight Connected Subgraph"
+</td></tr>
+<tr><td colspan="3">Section <kbd>Graph</kbd></td></tr>
+<tr><td><kbd>Obstacles</kbd></td><td align="center">1 N</td>
+    <td>Number of obstacles (for Obstacle-Avoiding Rectilinear
+Steiner Minimum Tree Problem)</td></tr>
+<tr><td><kbd>Nodes</kbd></td><td align="center">1 N</td>
+    <td>Number of nodes in the graph</td></tr>
+<tr><td><kbd>Edges</kbd></td><td align="center">1 N</td>
+    <td>Number of edges in the graph</td></tr>
+<tr><td><kbd>E</kbd></td><td align="center">2 N</td>
+    <td>Specification of one edge. The number of <kbd>E</kbd> lines
+        must match the number given in the <kbd>Edges</kbd> line. The two
+        values are Node1 and Node2. The nodes are numbered from
+        one to the number given in the <kbd>Nodes</kbd> line.</td></tr>
+<tr><td><kbd>Arcs</kbd></td><td align="center">1 N</td>
+    <td>Number of arcs in the graph</td></tr> 
+<tr><td><kbd>A</kbd></td><td align="center">3 N</td>
+    <td>Specification of one arc. The number of <kbd>A</kbd> lines
+        must match the number given in the <kbd>Arcs</kbd> line. The three
+        values are Tail-Node, Head-Node and Weight. The nodes are numbered
+        from one to the number given in the <kbd>Nodes</kbd> line.</td></tr> 
+<tr><td colspan="3">Section <kbd>Terminals</kbd></td></tr> 
+<tr><td><kbd>Terminals</kbd></td><td align="center">1 N</td>
+    <td>Number of terminals. Must be between one and the number of 
+        Nodes given in the Graph section.</td></tr>
+<tr><td><kbd>RootP</kbd></td><td align="center">1 N</td>
+    <td>Root for Rooted Prize-Collecting Steiner Problem in
+		Graphs</td></tr> 
+<tr><td><kbd>Root</kbd></td><td align="center">1 N</td>
+    <td>Node number of the Root-Node for directed Steiner 
+        tree problems.</td></tr> 
+<tr><td><kbd>T</kbd></td><td align="center">2 N</td>
+    <td>Specification of one terminal. The number of <kbd>T</kbd> 
+        lines must match the number given in the <kbd>Terminals</kbd>
+	line. The field specifies the node that is a terminal. The
+	nodes are numbered from one to the number given in the 
+        <kbd>Nodes</kbd> line. <br>
+		Node  Weight (Terminal for Maximum Node Weight Connected Subgraph)
+		</td></tr>  
+<tr><td><kbd>TP</kbd></td><td align="center">1 N</td>
+    <td>Terminal for (Rooted) Prize-Collecting Steiner
+		Problem in Graphs</td></tr>
+<tr><td colspan="3">Section <kbd>MaximumDegrees</kbd></td></tr> 
+<tr><td><kbd>MD</kbd></td><td align="center">1 N</td>
+    <td> Vertex-degree (Degree-Constrained Steiner Tree Problem in Graphs)
+		</td></tr>
+<tr><td colspan="3">Section <kbd>Coordinates</kbd></td></tr> 
+<tr><td><kbd>D{n}</kbd></td><td align="center">n N</td>
+    <td> The number of the values depends on the Dimension. <br>
+	example: DD | 2 N | represents 2D-Cordinates with X- and Y-Coordination.</td></tr>
+</tbody></table>
+<p>
+Of all sections only <kbd>Section Graph</kbd> is compulsory.  Within the section <kbd>Graph</kbd> we consider either
+directed or undirected graphs.  For directed graphs the keyword
+<kbd>Arcs</kbd> must appear and each line of an arc must start with an
+<kbd>A</kbd>. In addition, the section <kbd>Terminals</kbd> must
+specify a root node.  For undirected graphs the keyword
+<kbd>Edges</kbd> gives the number of edges and <kbd>E</kbd> lines in
+the file.  The format does not allow mixed graphs as any undirected
+edge may easily be represented by two anti-parallel arcs with the same
+end-nodes.
+</p>
+<p>
+The sections <kbd>Comment</kbd> and
+<kbd>Coordinates</kbd> are mandatory. If these sections appear to be
+in the data file, each of their keywords is mandatory itself.  Within
+the section <kbd>Coordinates</kbd> all entries must be of the same
+type.  Furthermore, whenever coordinates are given, they must be given
+for all nodes.
+</p>
+<h3>Including Presolve information</h3>
+<p>
+<img src="STP%20File%20Format_files/a4.gif" alt="Under construction">
+</p>
+<p>
+It is possible to include information on the results of preprocessing
+in the file. We view the instance specified by the <kbd>Graph</kbd>, 
+<kbd>Terminal</kbd> and <kbd>Coordinates</kbd> sections as the 
+problem that is to solve. That means given is the problem that is left
+over after any preprocessing.<br>
+The amount of information varies
+between indicating merely that the instance is the result of some
+preprocessing and including all data neccessary to reproduce the
+original problem.
+</p>
+<p>
+Preprocessing information is append to the file by use of another set 
+of sections:
+</p><p>
+</p>
+<table bgcolor="#DDDDDD" border="">
+<tbody><tr><td><kbd>Comment</kbd></td>
+    <td>Gives general information about the preprocessing 
+        program used.</td></tr>
+<tr><td><kbd>Presolve</kbd></td>
+    <td>Here information on the presolving is specified.</td></tr>
+<tr><td><kbd>Terminals</kbd></td>
+    <td>This is a mandatory section listing the terminals of 
+        the original instance.</td></tr>
+<tr><td><kbd>Coordinates</kbd></td>
+    <td>This is a mandatory section giving coordinates for the nodes 
+        of the original graph. This section is only necessary 
+        for drawing.</td></tr>
+</tbody></table>
+<p></p>
+<p>
+<i>Original</i> allways means <i>before preprocessing</i>. 
+</p>
+<p> 
+Since it is possibly to have several programs preprocess an instance,
+the set of preprocessing sections can be repeated.
+<br>
+The fields of the <kbd>Terminal</kbd> and <kbd>Coordinates</kbd>
+sections are the same as above. The <kbd>Presolve</kbd> section is
+specified as follows:
+</p>
+<table bgcolor="#DDDDDD" border="">
+<tbody><tr><th align="left">Name</th><th align="left">Fields</th>
+    <th align="left">Description</th></tr>
+<tr><td colspan="3">Section <kbd>Obstacles</kbd></td></tr> 
+<tr><td><kbd>RR</kbd></td><td align="center">4 N</td>
+    <td> axis-aligned rectangles and described by the coordinates of two
+opposite corners (x1 y1 x2 y2). (for Obstacle-Avoiding Rectilinear Steiner
+Minimum Tree Problem)</td></tr>
+</tbody></table>
+<p>
+<table bgcolor="#DDDDDD" border="">
+<tbody><tr><th align="left">Name</th><th align="left">Fields</th>
+    <th align="left">Description</th></tr>
+<tr><td colspan="3">Section <kbd>Presolve</kbd></td></tr>
+<tr><td><kbd>Fixed</kbd></td><td align="center">1 N</td>
+    <td> The value that must be added to the optimal value of 
+         this preprocessed instance to get the optimal value of the 
+         original instance. The sum of the weights of the
+         <kdb>EC lines (if present) should be equal the value 
+         of <kbd>Fixed</kbd>.</kdb></td></tr> 
+<tr><td><kbd>Lower</kbd></td><td align="center">1 N</td>
+    <td> A lower bound.</td></tr> 
+<tr><td><kbd>Upper</kbd></td><td align="center">1 N</td>
+    <td> An upper bound.</td></tr> 
+<tr><td><kbd>Time</kbd></td><td align="center">1 N</td>
+    <td> Used processing time in seconds.</td></tr> 
+<tr><td><kbd>OrgNodes</kbd></td><td align="center">1 N</td>
+    <td> The number of nodes in the original graph.</td>
+</tr><tr><td><kbd>OrgEdges</kbd></td><td align="center">1 N</td>
+    <td> The number of edges in the original graph.</td></tr>
+<tr><td><kbd>EA</kbd></td><td align="center">4 N</td>
+    <td>Description of an aggregated edge. The values are OriginalNode1,
+        OriginalNode2, OriginalWeight, NewEdge. It is possible to have
+        several <kbd>EA</kbd> lines with the same value for
+        NewEdge. It is also possible to have several lines with the same
+        values for OriginalNode1, OriginalNode2, OriginalWeight and
+        different values for NewEdge.</td></tr>
+<tr><td><kbd>EC</kbd></td><td align="center">3 N</td>
+    <td>Description of a choosen edge. The values are OriginalNode1,
+        OriginalNode2, OriginalWeight</td></tr>
+<tr><td><kbd>ED</kbd></td><td align="center">3 N</td>
+    <td>Description of an deleted edge. The values are OriginalNode1,
+        OriginalNode2, OriginalWeight</td></tr>
+<tr><td><kbd>ES</kbd></td><td align="center">2 N</td>
+    <td>Description of an edge used for the upper bound. 
+        The values are Node1, Node2. 
+        If one takes all the <kbd>EC</kbd> and <kbd>ES</kbd> edges
+        (de-aggregated with according to <kbd>EA</kbd>), it should
+        give a valid solution with objective value <kbd>Upper</kbd>.
+        Since <kbd>ES</kbd> lines are given with actual not original
+        node numbers, the <kbd>EA</kbd> lines must be used to find a 
+        solution to the original problem.</td></tr>
+</tbody></table>
+</p>
+<p>
+If the <kbd>EA</kbd> and <kbd>EC</kbd> lines for
+all edges in the orginal graph are given, it is possible to revert
+a solution to one in the orginal graph. If also all the deleted edges
+from the orginal graph are given by <kbd>ED</kbd> lines, the complete
+orginal graph can be rebuild. To use <kbd>EA</kbd>, <kbd>EC</kbd> and
+<kbd>ED</kbd> the <kbd>OrgNodes</kbd> and <kbd>OrgEdges</kbd> lines
+must be present. All <kbd>OriginalNode</kbd> numbers given in
+the <kbd>EA</kbd>, <kbd>EC</kbd> and
+<kbd>ED</kbd> lines must lie between 1 and the number in the 
+<kbd>OrgNodes</kbd> line.
+If <kbd>EC</kbd> lines are given, the sum of their weights must be equal
+to the number given on the <kbd>Fixed</kbd> line.
+</p>
+<p>
+An example is really mising here. ;-)
+</p>
+<hr noshade="noshade"><address><font size="-1">
+Last Update : 2001/05/14 23:48:19 $ by <a href="http://www.zib.de/mitarbeiter/mit.pl?email=koch">Thorsten Koch</a>
+<br>© 2001 by Konrad-Zuse-Zentrum für Informationstechnik Berlin (ZIB)<br>
+URL: http://www.zib.de
+</font></address>
+
+
+
+
+</body></html>
