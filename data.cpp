@@ -107,7 +107,7 @@ void st::Data::parseGraphSection(std::istream &file)
          std::getline(file, line))
     {
         std::istringstream stream(line);
-        std::vector<std::string> matches = getMatches(stream, "^\\s*(\\w*)\\s*\"(.*)\"\\s*$");
+        std::vector<std::string> matches = getMatches(stream, "^\\s*(\\w*)\\s*\"?(.*)\"?\\s*$");
         stream.seekg(0, stream.beg);
 
         const std::string itemName  = toLower(matches[0]);
@@ -124,17 +124,22 @@ void st::Data::parseGraphSection(std::istream &file)
         else if (itemName == "edges")
         {
             this->graph.numberOfEdges = std::stoi(itemValue);
+            this->graph.edges.reserve(this->graph.numberOfEdges);
         }
         else if (itemName == "arcs")
         {
             this->graph.numberOfArcs = std::stoi(itemValue);
+            this->graph.arcs.reserve(this->graph.numberOfArcs);
         }
         else if (itemName == "e")
         {
-            stream.seekg(0, stream.beg);
-            matches = getMatches(stream, "^\\s*E\\s*(\\d+)\s*(\\d+)\s*(\\d+)\s*$");
+            matches = getMatches(stream, "^\\s*E\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
 
-            //TODO: this->graph.edges.push_back();
+            std::uint32_t first = std::stoi(matches[0]);
+            std::uint32_t second = std::stoi(matches[1]);
+            std::uint32_t weight = std::stoi(matches[2]);
+
+            this->graph.edges.push_back(Graph::Edge(first, second, weight));
         }
         else if (itemName == "a")
         {
@@ -206,7 +211,10 @@ void st::Data::load(std::istream &file)
 
 void st::Data::print(std::ostream &stream)
 {
+    stream << "Comments\n";
     this->comment.print(stream);
+    stream << "Graph\n";
+    this->graph.print(stream);
 }
 
 void st::Data::Comment::print(std::ostream& out) const
