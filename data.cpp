@@ -218,3 +218,42 @@ void st::Data::Comment::print(std::ostream& out) const
         << "Remark  : " << this->remark  << '\n'
         << std::endl;
 }
+
+st::Data::Graph::Edge::Edge()
+    : Edge(0,0,0)
+{
+
+}
+
+st::Data::Graph::Edge::Edge(uint32_t _first, uint32_t _second, int32_t _weight)
+    : first(_first), second(_second), weight(_weight)
+{
+
+}
+
+st::Data::Graph::Graph()
+    : numberOfObstacles(0), numberOfNodes(0), numberOfEdges(0), numberOfArcs(0)
+{
+
+}
+
+void st::Data::Graph::print(std::ostream &out) const
+{
+    out << "Number of Edges     : " << this->numberOfEdges << ' ' << this->edges.size() << '\n'
+        << "Number of Nodes     : " << this->numberOfNodes << '\n'
+        << "Number of Arcs      : " << this->numberOfArcs << '\n'
+        << "Number of Obstacles : " << this->numberOfObstacles
+        << std::endl;
+}
+
+st::Data::Graph::Arc::Arc()
+    : Arc(0,0,0)
+{
+
+}
+
+st::Data::Graph::Arc::Arc(uint32_t _first, uint32_t _second, int32_t _weight)
+    : first(_first), second(_second), weight(_weight)
+{
+
+}

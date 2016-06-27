@@ -28,13 +28,20 @@ private:
         {
             std::uint32_t first;
             std::uint32_t second;
+            std::int32_t weight;
+
+            Edge();
+            Edge(std::uint32_t _first, std::uint32_t _second, std::int32_t _weight);
         };
 
         struct Arc
         {
             std::uint32_t first;
             std::uint32_t second;
-            std::uint32_t weidght;
+            std::int32_t weight;
+
+            Arc();
+            Arc(std::uint32_t _first, std::uint32_t _second, std::int32_t _weight);
         };
 
         std::uint32_t numberOfObstacles;
@@ -43,6 +50,10 @@ private:
         std::uint32_t numberOfArcs;
         std::vector<Edge> edges;
         std::vector<Arc> arcs;
+
+        Graph();
+
+        void print(std::ostream &out) const;
     } graph;
 
     struct Terminal
