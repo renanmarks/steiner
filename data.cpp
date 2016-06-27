@@ -100,7 +100,49 @@ void st::Data::parseCommentSection(std::istream &file)
 
 void st::Data::parseGraphSection(std::istream &file)
 {
+    std::string line;
 
+    for (std::getline(file, line);
+         toLower(line) != "end";
+         std::getline(file, line))
+    {
+        std::istringstream stream(line);
+        std::vector<std::string> matches = getMatches(stream, "^\\s*(\\w*)\\s*\"(.*)\"\\s*$");
+        stream.seekg(0, stream.beg);
+
+        const std::string itemName  = toLower(matches[0]);
+        const std::string itemValue = matches[1];
+
+        if (itemName == "obstacles")
+        {
+            this->graph.numberOfObstacles = std::stoi(itemValue);
+        }
+        else if (itemName == "nodes")
+        {
+            this->graph.numberOfNodes = std::stoi(itemValue);
+        }
+        else if (itemName == "edges")
+        {
+            this->graph.numberOfEdges = std::stoi(itemValue);
+        }
+        else if (itemName == "arcs")
+        {
+            this->graph.numberOfArcs = std::stoi(itemValue);
+        }
+        else if (itemName == "e")
+        {
+            stream.seekg(0, stream.beg);
+            matches = getMatches(stream, "^\\s*E\\s*(\\d+)\s*(\\d+)\s*(\\d+)\s*$");
+
+            //TODO: this->graph.edges.push_back();
+        }
+        else if (itemName == "a")
+        {
+            //TODO: this->graph.arcs.push_back();
+        }
+    }
+
+    return;
 }
 
 void st::Data::parseTerminalsSection(std::istream &file)
