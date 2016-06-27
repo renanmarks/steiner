@@ -120,18 +120,17 @@ void st::Data::parseGraphSection(std::istream &file)
         else if (itemName == "nodes")
         {
             this->graph.numberOfNodes = std::stoi(itemValue);
+            this->vertices.resize(this->graph.numberOfNodes);
         }
         else if (itemName == "edges")
         {
-            this->graph.numberOfEdges = std::stoi(itemValue);
-            this->graph.edges.reserve(this->graph.numberOfEdges);
+            this->graph.edges.reserve(std::stoi(itemValue));
         }
         else if (itemName == "arcs")
         {
-            this->graph.numberOfArcs = std::stoi(itemValue);
-            this->graph.arcs.reserve(this->graph.numberOfArcs);
+            this->graph.arcs.reserve(std::stoi(itemValue));
         }
-        else if (itemName == "e")
+        else
         {
             matches = getMatches(stream, "^\\s*E\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
 
@@ -139,11 +138,14 @@ void st::Data::parseGraphSection(std::istream &file)
             std::uint32_t second = std::stoi(matches[1]);
             std::uint32_t weight = std::stoi(matches[2]);
 
-            this->graph.edges.push_back(Graph::Edge(first, second, weight));
-        }
-        else if (itemName == "a")
-        {
-            //TODO: this->graph.arcs.push_back();
+            if (itemName == "e")
+            {
+                this->graph.edges.push_back(Graph::Edge(first, second, weight));
+            }
+            else if (itemName == "a")
+            {
+                this->graph.arcs.push_back(Graph::Arc(first, second, weight));
+            }
         }
     }
 
@@ -152,12 +154,59 @@ void st::Data::parseGraphSection(std::istream &file)
 
 void st::Data::parseTerminalsSection(std::istream &file)
 {
+    std::string line;
 
+    for (std::getline(file, line);
+         toLower(line) != "end";
+         std::getline(file, line))
+    {
+        std::istringstream stream(line);
+        std::vector<std::string> matches = getMatches(stream, "^\\s*(\\w*)\\s*\"?(.*)\"?\\s*$");
+        stream.seekg(0, stream.beg);
+
+        const std::string itemName  = toLower(matches[0]);
+        const std::string itemValue = matches[1];
+
+        if (itemName == "terminals")
+        {
+            this->terminal.terminals.reserve(std::stoi(itemValue));
+        }
+        else if (itemName == "rootp")
+        {
+            this->terminal.rootP = std::stoi(itemValue);
+        }
+        else if (itemName == "root")
+        {
+            this->terminal.root = std::stoi(itemValue);
+        }
+        else if (itemName == "t")
+        {
+            this->terminal.terminals.push_back(std::stoi(itemValue));
+        }
+    }
+
+    return;
 }
 
 void st::Data::parseCoordinatesSection(std::istream &file)
 {
+    std::string line;
 
+    for (std::getline(file, line);
+         toLower(line) != "end";
+         std::getline(file, line))
+    {
+        std::istringstream stream(line);
+        std::vector<std::string> matches = getMatches(stream, "^\\s*D+\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
+
+        const std::uint32_t coordIndex  = std::stoi(matches[0]) - 1;
+        const double coordX             = std::stod(matches[1]);
+        const double coordY             = std::stod(matches[2]);
+
+        this->vertices.at(coordIndex) = Vertex(coordX, coordY, 0.0);
+    }
+
+    return;
 }
 
 st::Data::Data()
@@ -215,6 +264,8 @@ void st::Data::print(std::ostream &stream)
     this->comment.print(stream);
     stream << "Graph\n";
     this->graph.print(stream);
+    stream << "Terminals\n";
+    this->terminal.print(stream);
 }
 
 void st::Data::Comment::print(std::ostream& out) const
@@ -240,17 +291,17 @@ st::Data::Graph::Edge::Edge(uint32_t _first, uint32_t _second, int32_t _weight)
 }
 
 st::Data::Graph::Graph()
-    : numberOfObstacles(0), numberOfNodes(0), numberOfEdges(0), numberOfArcs(0)
+    : numberOfObstacles(0), numberOfNodes(0)
 {
 
 }
 
 void st::Data::Graph::print(std::ostream &out) const
 {
-    out << "Number of Edges     : " << this->numberOfEdges << ' ' << this->edges.size() << '\n'
+    out << "Number of Edges     : " << this->edges.size() << '\n'
         << "Number of Nodes     : " << this->numberOfNodes << '\n'
-        << "Number of Arcs      : " << this->numberOfArcs << '\n'
-        << "Number of Obstacles : " << this->numberOfObstacles
+        << "Number of Arcs      : " << this->arcs.size() << '\n'
+        << "Number of Obstacles : " << this->numberOfObstacles << '\n'
         << std::endl;
 }
 
@@ -264,4 +315,31 @@ st::Data::Graph::Arc::Arc(uint32_t _first, uint32_t _second, int32_t _weight)
     : first(_first), second(_second), weight(_weight)
 {
 
+}
+
+st::Data::Terminal::Terminal()
+    : rootP(0), root(0)
+{
+
+}
+
+void st::Data::Terminal::print(std::ostream &out) const
+{
+    out << "Number of Terminals  : " << this->terminals.size() << '\n'
+        << "Root                 : " << this->root << '\n'
+        << "Root (Prize-Collect) : " << this->rootP << '\n'
+        << std::endl;
+}
+
+st::Data::Vertex::Vertex()
+    : Vertex(0.0, 0.0, 0.0)
+{
+
+}
+
+st::Data::Vertex::Vertex(double x, double y, double z)
+{
+    values.at(0) = x;
+    values.at(1) = y;
+    values.at(2) = z;
 }

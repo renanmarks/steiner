@@ -46,8 +46,6 @@ private:
 
         std::uint32_t numberOfObstacles;
         std::uint32_t numberOfNodes;
-        std::uint32_t numberOfEdges;
-        std::uint32_t numberOfArcs;
         std::vector<Edge> edges;
         std::vector<Arc> arcs;
 
@@ -58,21 +56,24 @@ private:
 
     struct Terminal
     {
-        std::uint32_t numberOfTerminals;
         std::uint32_t rootP;
         std::uint32_t root;
-        std::vector<std::uint32_t> nodes;
+        std::vector<std::uint32_t> terminals;
+
+        Terminal();
+
+        void print(std::ostream &out) const;
     } terminal;
 
-    struct Coordinates
+    struct Vertex
     {
-        struct Vertex
-        {
-            std::array<double, 3> values;
-        };
+        std::array<double, 3> values;
 
-        std::vector<Vertex> vertices;
+        Vertex();
+        Vertex(double x, double y, double z);
     };
+
+    std::vector<Vertex> vertices;
 
     bool parseHeader(std::istream &file);
     void parseCommentSection(std::istream &file);
