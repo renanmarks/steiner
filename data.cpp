@@ -434,3 +434,44 @@ bool st::Data::Vertex::operator!=(const st::Data::Vertex &other) const
 {
     return !(*this == other);
 }
+
+bool st::Data::Vertex::isCollinearWith(const st::Data::Vertex &other) const
+{
+    bool sameX = this->values[Coord::x] == other.values[Coord::x];
+    bool sameY = this->values[Coord::y] == other.values[Coord::y];
+    //bool sameZ = this->values[2] == other.values[2];
+
+    return sameX && sameY;
+}
+
+st::Data::Vertex st::Data::Vertex::getPerpendicularProjectionOnEdge(const Vertex &e1, const Vertex &e2) const
+{
+    if ((e1.values[Coord::x] != e2.values[Coord::x]) && (e1.values[Coord::y] != e2.values[Coord::x]))
+    {
+        return st::Data::Vertex();
+    }
+
+    if (e1.values[Coord::x] == e2.values[Coord::x])
+    {
+        auto minmax = std::minmax(e1.values[Coord::y], e2.values[Coord::y]);
+
+        if ((minmax.first < this->values[Coord::y]) && (this->values[Coord::y] < minmax.second))
+        {
+            return st::Data::Vertex(e1.values[Coord::x], this->values[Coord::y], 0.0);
+        }
+
+        return st::Data::Vertex();
+    }
+
+    if (e1.values[Coord::y] == e2.values[Coord::y])
+    {
+        auto minmax = std::minmax(e1.values[Coord::x], e2.values[Coord::x]);
+
+        if ((minmax.first < this->values[Coord::x]) && (this->values[Coord::x] < minmax.second))
+        {
+            return st::Data::Vertex(this->values[Coord::x], e1.values[Coord::y], 0.0);
+        }
+    }
+
+    return st::Data::Vertex();
+}

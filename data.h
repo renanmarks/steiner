@@ -83,6 +83,11 @@ public:
 
     struct Vertex
     {
+        enum Coord
+        {
+            x = 0, y, z
+        };
+
         std::int32_t index;
         std::array<double, 3> values;
         using value_type = double;
@@ -93,6 +98,9 @@ public:
         value_type operator[](size_t i) const;
         bool operator==(const Vertex& other) const;
         bool operator!=(const Vertex& other) const;
+
+        bool isCollinearWith(const Vertex& other) const;
+        Vertex getPerpendicularProjectionOnEdge(const Vertex& e1, const Vertex& e2) const;
     };
 
     std::vector<Vertex> vertices;
