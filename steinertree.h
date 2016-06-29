@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <ostream>
+#include <unordered_map>
 #include "data.h"
 
 namespace st
@@ -11,15 +12,7 @@ namespace st
 
 class RectilinearSteinerTree
 {
-private:
-    std::uint32_t distance;
-    std::size_t numberOfEdges;
-    const st::Data* data;
-    using AdjacencyList = std::vector<std::vector<std::uint32_t>>;
-    AdjacencyList adjacencyList;
-
 public:
-
     struct Edge
     {
         std::uint32_t first;
@@ -31,10 +24,14 @@ public:
         Edge reverse() const;
         bool isReverseOf(const st::RectilinearSteinerTree::Edge& rhs) const;
         bool hasVertexOf(const st::RectilinearSteinerTree::Edge& rhs) const;
-        bool operator() (const st::RectilinearSteinerTree::Edge& rhs) const;
         bool operator== (const st::RectilinearSteinerTree::Edge& rhs) const;
         bool operator!= (const st::RectilinearSteinerTree::Edge& rhs) const;
 
+    };
+
+    struct EdgeHasher
+    {
+        std::size_t operator() (const st::RectilinearSteinerTree::Edge& rhs) const;
     };
 
     RectilinearSteinerTree(const st::Data& _data);
@@ -61,6 +58,16 @@ public:
 
     bool operator== (const st::RectilinearSteinerTree& rhs) const;
     bool operator!= (const st::RectilinearSteinerTree& rhs) const;
+
+private:
+    std::uint32_t distance;
+    std::size_t numberOfEdges;
+    const st::Data* data;
+    using AdjacencyList = std::vector<std::vector<std::uint32_t>>;
+    AdjacencyList adjacencyList;
+
+    std::vector<st::Data::Vertex> steinerVertices;
+    std::unordered_map<Edge, st::Data::Vertex, EdgeHasher> inflectionVertices;
 };
 
 std::ostream& operator<<(std::ostream& os, const st::RectilinearSteinerTree::Edge& e);

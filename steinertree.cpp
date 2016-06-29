@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <set>
+#include <boost/functional/hash.hpp>
 
 namespace
 {
@@ -272,4 +273,17 @@ bool st::RectilinearSteinerTree::Edge::isReverseOf(const st::RectilinearSteinerT
 bool st::RectilinearSteinerTree::Edge::hasVertexOf(const st::RectilinearSteinerTree::Edge &rhs) const
 {
     return this->first == rhs.first || this->first == rhs.second || this->second == rhs.first || this->second == rhs.second;
+}
+
+std::size_t st::RectilinearSteinerTree::EdgeHasher::operator()(const st::RectilinearSteinerTree::Edge &rhs) const
+{
+    using boost::hash_value;
+    using boost::hash_combine;
+
+    std::size_t seed = 0;
+
+    hash_combine(seed, hash_value(rhs.first));
+    hash_combine(seed, hash_value(rhs.second));
+
+    return seed;
 }
