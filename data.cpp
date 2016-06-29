@@ -268,6 +268,20 @@ void st::Data::print(std::ostream &stream)
     this->terminal.print(stream);
 }
 
+bool st::Data::operator==(const st::Data &other) const
+{
+    bool sameGraph = this->graph == other.graph;
+    bool sameTerminals = this->terminal == other.terminal;
+    bool sameVertices = this->vertices == other.vertices;
+
+    return sameGraph && sameTerminals && sameVertices;
+}
+
+bool st::Data::operator!=(const st::Data &other) const
+{
+    return !(*this == other);
+}
+
 void st::Data::Comment::print(std::ostream& out) const
 {
     out << "Name    : " << this->name    << '\n'
@@ -305,6 +319,16 @@ void st::Data::Graph::print(std::ostream &out) const
         << std::endl;
 }
 
+bool st::Data::Graph::operator==(const st::Data::Graph &other) const
+{
+
+}
+
+bool st::Data::Graph::operator!=(const st::Data::Graph &other) const
+{
+
+}
+
 st::Data::Graph::Arc::Arc()
     : Arc(0,0,0)
 {
@@ -331,6 +355,16 @@ void st::Data::Terminal::print(std::ostream &out) const
         << std::endl;
 }
 
+bool st::Data::Terminal::operator==(const st::Data::Terminal &other) const
+{
+
+}
+
+bool st::Data::Terminal::operator!=(const st::Data::Terminal &other) const
+{
+
+}
+
 st::Data::Vertex::Vertex()
     : Vertex(0.0, 0.0, 0.0)
 {
@@ -338,8 +372,28 @@ st::Data::Vertex::Vertex()
 }
 
 st::Data::Vertex::Vertex(double x, double y, double z)
+    : Vertex(-1, x, y, z)
 {
-    values.at(0) = x;
-    values.at(1) = y;
-    values.at(2) = z;
+
+}
+
+st::Data::Vertex::Vertex(int32_t i, double x, double y, double z)
+    : index(i), values({x, y, z})
+{
+
+}
+
+st::Data::Vertex::value_type st::Data::Vertex::operator[](size_t i) const
+{
+    return values.at(i);
+}
+
+bool st::Data::Vertex::operator==(const st::Data::Vertex &other) const
+{
+    return this->values == other.values;
+}
+
+bool st::Data::Vertex::operator!=(const st::Data::Vertex &other) const
+{
+    return !(*this == other);
 }

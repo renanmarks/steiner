@@ -10,7 +10,15 @@ namespace st
 
 class Data
 {
-private:
+public:
+    Data();
+
+    void load(std::istream& file);
+    void print(std::ostream& stream);
+
+    bool operator==(const Data& other) const;
+    bool operator!=(const Data& other) const;
+//private:
     struct Comment
     {
         std::string name;
@@ -52,6 +60,8 @@ private:
         Graph();
 
         void print(std::ostream &out) const;
+        bool operator==(const Graph& other) const;
+        bool operator!=(const Graph& other) const;
     } graph;
 
     struct Terminal
@@ -63,14 +73,22 @@ private:
         Terminal();
 
         void print(std::ostream &out) const;
+        bool operator==(const Terminal& other) const;
+        bool operator!=(const Terminal& other) const;
     } terminal;
 
     struct Vertex
     {
+        std::int32_t index;
         std::array<double, 3> values;
+        using value_type = double;
 
         Vertex();
         Vertex(double x, double y, double z);
+        Vertex(std::int32_t i, double x, double y, double z);
+        value_type operator[](size_t i) const;
+        bool operator==(const Vertex& other) const;
+        bool operator!=(const Vertex& other) const;
     };
 
     std::vector<Vertex> vertices;
@@ -82,11 +100,6 @@ private:
 //TODO:    void parseMaximumDegressSection();
     void parseCoordinatesSection(std::istream &file);
 
-public:
-    Data();
-
-    void load(std::istream& file);
-    void print(std::ostream& stream);
 };
 
 }
