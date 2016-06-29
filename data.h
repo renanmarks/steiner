@@ -40,6 +40,8 @@ public:
 
             Edge();
             Edge(std::uint32_t _first, std::uint32_t _second, std::int32_t _weight);
+            bool operator==(const Edge& other) const;
+            bool operator!=(const Edge& other) const;
         };
 
         struct Arc
@@ -50,6 +52,8 @@ public:
 
             Arc();
             Arc(std::uint32_t _first, std::uint32_t _second, std::int32_t _weight);
+            bool operator==(const Arc& other) const;
+            bool operator!=(const Arc& other) const;
         };
 
         std::uint32_t numberOfObstacles;

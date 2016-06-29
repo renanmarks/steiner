@@ -304,6 +304,20 @@ st::Data::Graph::Edge::Edge(uint32_t _first, uint32_t _second, int32_t _weight)
 
 }
 
+bool st::Data::Graph::Edge::operator==(const st::Data::Graph::Edge &other) const
+{
+    bool sameFirst = this->first == other.first;
+    bool sameSecond = this->second == other.second;
+    bool sameWeight = this->weight == other.weight;
+
+    return sameFirst && sameSecond && sameWeight;
+}
+
+bool st::Data::Graph::Edge::operator!=(const st::Data::Graph::Edge &other) const
+{
+    return !(*this == other);
+}
+
 st::Data::Graph::Graph()
     : numberOfObstacles(0), numberOfNodes(0)
 {
@@ -321,12 +335,17 @@ void st::Data::Graph::print(std::ostream &out) const
 
 bool st::Data::Graph::operator==(const st::Data::Graph &other) const
 {
+    bool sameNumNodes = this->numberOfNodes == other.numberOfNodes;
+    bool sameNumObs = this->numberOfObstacles == other.numberOfObstacles;
+    bool sameEdges = this->edges == other.edges;
+    bool sameArcs = this->arcs == other.arcs;
 
+    return sameNumNodes && sameNumObs && sameEdges && sameArcs;
 }
 
 bool st::Data::Graph::operator!=(const st::Data::Graph &other) const
 {
-
+    return !(*this == other);
 }
 
 st::Data::Graph::Arc::Arc()
@@ -339,6 +358,20 @@ st::Data::Graph::Arc::Arc(uint32_t _first, uint32_t _second, int32_t _weight)
     : first(_first), second(_second), weight(_weight)
 {
 
+}
+
+bool st::Data::Graph::Arc::operator==(const st::Data::Graph::Arc &other) const
+{
+    bool sameFirst = this->first == other.first;
+    bool sameSecond = this->second == other.second;
+    bool sameWeight = this->weight == other.weight;
+
+    return sameFirst && sameSecond && sameWeight;
+}
+
+bool st::Data::Graph::Arc::operator!=(const st::Data::Graph::Arc &other) const
+{
+    return !(*this == other);
 }
 
 st::Data::Terminal::Terminal()
@@ -357,12 +390,16 @@ void st::Data::Terminal::print(std::ostream &out) const
 
 bool st::Data::Terminal::operator==(const st::Data::Terminal &other) const
 {
+    bool sameRoot = this->root == other.root;
+    bool sameRootP = this->rootP == other.rootP;
+    bool sameTerminals = this->terminals == other.terminals;
 
+    return sameRoot && sameRootP && sameTerminals;
 }
 
 bool st::Data::Terminal::operator!=(const st::Data::Terminal &other) const
 {
-
+    return !(*this == other);
 }
 
 st::Data::Vertex::Vertex()
