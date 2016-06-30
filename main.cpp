@@ -1,6 +1,7 @@
-#include "data.h"
 #include <iostream>
 #include <fstream>
+#include "data.h"
+#include "graph.h"
 
 int main(int argc, char* argv[])
 {
@@ -38,6 +39,17 @@ int main(int argc, char* argv[])
     data.load(file);
 
     data.print(std::cout);
+
+    st::Graph graph;
+    st::Graph::Vertex v1(0, 0);
+    st::Graph::Vertex v2(4, 4);
+
+    v1 = graph.addVertex(v1);
+    v2 = graph.addVertex(v2);
+
+    graph.addEdge(st::Graph::Edge(v1, v2));
+
+    graph.print();
 
     return 0;
 }
