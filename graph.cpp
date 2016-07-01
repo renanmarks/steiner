@@ -220,7 +220,7 @@ st::Graph::Edge::Edge(const st::Graph::Vertex &_s, const st::Graph::Vertex &_t)
 }
 
 st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)
-    : rank(boost::num_vertices(_graph)), parent(boost::num_vertices(_graph)), ds(&rank[0], &parent[1])
+    : rank(boost::num_vertices(_graph)), parent(boost::num_vertices(_graph)), ds(&rank[0], &parent[0])
 {
     boost::initialize_incremental_components(_graph, ds);
     boost::incremental_components(_graph, ds);
