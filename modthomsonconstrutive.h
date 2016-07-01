@@ -1,7 +1,7 @@
 #ifndef MODTHOMSONCONSTRUTIVE_H
 #define MODTHOMSONCONSTRUTIVE_H
 
-#include <queue>
+#include <set>
 #include "irstalgorithm.h"
 
 namespace st
@@ -26,13 +26,14 @@ private:
         }
     };
 
-    using DistanceHeap = std::priority_queue<VertexPair, std::vector<VertexPair>, LessVertexPair>;
+    using MinimumDistanceSet = std::set<VertexPair, LessVertexPair>;
 
-    DistanceHeap heap;
+    MinimumDistanceSet set;
     const st::Data* data;
 
     VertexPair getMinDistanceVertices();
     void loadVertices();
+    void connect(const VertexPair& pair);
 
 public:
     ModThomsonConstrutive(const st::Data& _data);
