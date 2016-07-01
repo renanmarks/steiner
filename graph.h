@@ -68,6 +68,7 @@ public:
     std::uint32_t getNumberOfEdges() const;
 
     std::uint32_t getNumberOfComponents() const;
+    bool areOnSameComponent(const Vertex& v1, const Vertex& v2);
 
     void print() const;
     void setup();

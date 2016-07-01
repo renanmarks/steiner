@@ -144,6 +144,11 @@ uint32_t st::Graph::getNumberOfComponents() const
     return components.size();
 }
 
+bool st::Graph::areOnSameComponent(const st::Graph::Vertex &v1, const st::Graph::Vertex &v2)
+{
+    return (this->disjointSet.ds.find_set(v1.index) == this->disjointSet.ds.find_set(v2.index));
+}
+
 void st::Graph::print() const
 {
     std::cout << "Distance   : " << this->distanceBalance << std::endl;
