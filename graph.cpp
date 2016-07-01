@@ -156,9 +156,9 @@ void st::Graph::print() const
     std::cout << "Edges      : ";
     boost::print_edges(this->graph, get(&st::Graph::Vertex::index, this->graph));
 
-    std::cout << "Components :" << getNumberOfComponents() << std::endl;
+    std::cout << "Components : " << getNumberOfComponents() << std::endl;
 
-    std::cout << "Graph      :" << std::endl;
+    std::cout << "Graph      : " << std::endl;
     boost::print_graph(this->graph);
 }
 
