@@ -54,6 +54,8 @@ st::Graph::Vertex st::Graph::addVertex(const st::Graph::Vertex &v)
     obj.index = s;
     this->graph[s] = obj;
 
+    this->setup();
+
     return obj;
 }
 
@@ -72,6 +74,8 @@ void st::Graph::removeVertex(const st::Graph::Vertex &v)
     const auto s = boost::vertex(v.index, this->graph);
 
     boost::remove_vertex(s, this->graph);
+
+    this->setup();
 }
 
 st::Graph::Vertex st::Graph::getVertex(int32_t index) const
@@ -128,6 +132,7 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     if (ed.second == true)
     {
         boost::remove_edge(sd, td, this->graph);
+        this->setup();
         this->distanceBalance -= e.distance;
     }
 }
