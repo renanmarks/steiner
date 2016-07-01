@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <boost/graph/graph_utility.hpp>
+#include <boost/graph/incremental_components.hpp>
 #include "graph.h"
 
 namespace
@@ -33,7 +35,7 @@ st::Graph::Edge::Type getType(const st::Graph::Vertex& c0, const st::Graph::Vert
 }
 
 st::Graph::Graph()
-    : distanceBalance(0)
+    : graph(), distanceBalance(0), disjointSet(graph)
 {
 
 }
@@ -44,8 +46,10 @@ st::Graph::Vertex st::Graph::addVertex(const st::Graph::Vertex &v)
     auto obj = v;
 
     obj.index = s;
-
     this->graph[s] = obj;
+
+    // Reinitialize DS structure
+//FIXME:    this->disjointSet = DisjointSetData(this->graph);
 
     return obj;
 }
@@ -65,6 +69,9 @@ void st::Graph::removeVertex(const st::Graph::Vertex &v)
     const auto s = boost::vertex(v.index, this->graph);
 
     boost::remove_vertex(s, this->graph);
+
+    // Reinitialize DS structure
+//FIXME:    this->disjointSet = DisjointSetData(this->graph);
 }
 
 st::Graph::Vertex st::Graph::getVertex(int32_t index) const
@@ -74,13 +81,34 @@ st::Graph::Vertex st::Graph::getVertex(int32_t index) const
     return this->graph[s];
 }
 
+std::vector<st::Graph::Vertex> st::Graph::getVertices() const
+{
+    std::vector<st::Graph::Vertex> returnVerts;
+
+    const auto iterators = boost::vertices(this->graph);
+
+    for (auto i = iterators.first; i != iterators.second; i++)
+    {
+        const auto& v = this->graph[*i];
+
+        returnVerts.push_back(v);
+    }
+
+    return returnVerts;
+}
+
+uint32_t st::Graph::getNumberOfVertices() const
+{
+    return boost::num_vertices(this->graph);
+}
+
 void st::Graph::addEdge(const st::Graph::Edge &e)
 {
     const auto sd = boost::vertex(e.source.index, this->graph);
     const auto td = boost::vertex(e.target.index, this->graph);
 
     boost::add_edge(sd, td, this->graph);
-
+//FIXME:    this->disjointSet.ds.union_set(sd, td);
     this->distanceBalance += e.distance;
 }
 
@@ -100,21 +128,39 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     if (ed.second == true)
     {
         boost::remove_edge(sd, td, this->graph);
+//FIXME:        this->disjointSet = DisjointSetData(this->graph);
         this->distanceBalance -= e.distance;
     }
 }
 
+uint32_t st::Graph::getNumberOfEdges() const
+{
+    return boost::num_edges(this->graph);
+}
+
+uint32_t st::Graph::getNumberOfComponents() const
+{
+    std::unique_ptr<DisjointSetData> ds (new DisjointSetData(this->graph));
+
+    using Components = boost::component_index<DisjointSetData::Vertex>;
+    Components components(this->disjointSet.parent.begin(), this->disjointSet.parent.end());
+
+    return components.size();
+}
+
 void st::Graph::print() const
 {
-    std::cout << "Distance : " << this->distanceBalance << std::endl;
+    std::cout << "Distance   : " << this->distanceBalance << std::endl;
 
-    std::cout << "Vertices : ";
+    std::cout << "Vertices   : ";
     boost::print_vertices(this->graph, get(&st::Graph::Vertex::index, this->graph));
 
-    std::cout << "Edges    : ";
+    std::cout << "Edges      : ";
     boost::print_edges(this->graph, get(&st::Graph::Vertex::index, this->graph));
 
-    std::cout << "Graph    :" << std::endl;
+    std::cout << "Components :" << getNumberOfComponents() << std::endl;
+
+    std::cout << "Graph      :" << std::endl;
     boost::print_graph(this->graph);
 }
 
@@ -122,6 +168,12 @@ void st::Graph::print() const
 st::Graph::Vertex::Vertex()
     : Vertex(0, 0)
 
+{
+
+}
+
+st::Graph::Vertex::Vertex(const st::Data::Vertex &v)
+    : Vertex(v.values[st::Data::Vertex::x], v.values[st::Data::Vertex::y])
 {
 
 }
@@ -138,6 +190,25 @@ st::Graph::Vertex::Vertex(int32_t _x, int32_t _y, st::Graph::Vertex::Type _t)
 
 }
 
+int32_t st::Graph::Vertex::distanceTo(const st::Graph::Vertex &other) const
+{
+    return distanceManhattan2D(*this, other);
+}
+
+bool st::Graph::Vertex::operator==(const st::Graph::Vertex &other) const
+{
+    bool sameX = this->x == other.x;
+    bool sameY = this->y == other.y;
+    bool sameI = this->index == other.index;
+
+    return sameX && sameY && sameI;
+}
+
+bool st::Graph::Vertex::operator!=(const st::Graph::Vertex &other) const
+{
+    return !(*this == other);
+}
+
 st::Graph::Edge::Edge()
     : Edge(Vertex(), Vertex())
 {
@@ -148,4 +219,11 @@ st::Graph::Edge::Edge(const st::Graph::Vertex &_s, const st::Graph::Vertex &_t)
     : source(_s), target(_t), distance(distanceManhattan2D(_s, _t)), type(getType(_s, _t))
 {
 
+}
+
+st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)
+    : rank(boost::num_vertices(_graph)), parent(boost::num_vertices(_graph)), ds(&rank[0], &parent[1])
+{
+    boost::initialize_incremental_components(_graph, ds);
+    boost::incremental_components(_graph, ds);
 }
