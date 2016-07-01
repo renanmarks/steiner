@@ -70,6 +70,7 @@ public:
     std::uint32_t getNumberOfComponents() const;
 
     void print() const;
+    void setup();
 
 private:
     using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
@@ -88,10 +89,16 @@ private:
         std::vector<Vertex> parent;
         std::vector<VertexSizeType> rank;
 
-        boost::disjoint_sets<Rank, Parent> ds;
+        using DisjointSet = boost::disjoint_sets<Rank, Parent>;
+        DisjointSet ds;
+
+        const BoostGraph& graph;
 
         DisjointSetData(const BoostGraph& _graph);
+        void setup();
     };
+
+    DisjointSetData disjointSet;
 };
 
 }

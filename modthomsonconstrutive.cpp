@@ -14,7 +14,8 @@ void st::ModThomsonConstrutive::loadVertices()
         const st::Data::Vertex dv = this->data->vertices.at(index);
         Vertex v(dv);
 
-        v = this->graph.addVertex(v);
+        v.index = index;
+        v = this->graph.updateVertex(v,v);
 
         for (const Vertex j : this->graph.getVertices() )
         {
@@ -31,11 +32,12 @@ void st::ModThomsonConstrutive::loadVertices()
 }
 
 st::ModThomsonConstrutive::ModThomsonConstrutive(const st::Data &_data)
-    : graph(), heap(), data(&_data)
+    : graph(_data.terminal.terminals.size()), heap(), data(&_data)
 {
     loadVertices();
+    this->graph.setup();
 
-    std::int32_t numberOfComponents = this->graph.getNumberOfVertices();
+    //std::int32_t numberOfComponents = this->graph.getNumberOfVertices();
 }
 
 st::Graph st::ModThomsonConstrutive::run()
