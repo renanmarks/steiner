@@ -35,7 +35,13 @@ st::Graph::Edge::Type getType(const st::Graph::Vertex& c0, const st::Graph::Vert
 }
 
 st::Graph::Graph()
-    : graph(), distanceBalance(0), disjointSet(graph)
+    : Graph(0)
+{
+
+}
+
+st::Graph::Graph(uint32_t nVertices)
+    : graph(nVertices), distanceBalance(0)
 {
 
 }
@@ -47,9 +53,6 @@ st::Graph::Vertex st::Graph::addVertex(const st::Graph::Vertex &v)
 
     obj.index = s;
     this->graph[s] = obj;
-
-    // Reinitialize DS structure
-//FIXME:    this->disjointSet = DisjointSetData(this->graph);
 
     return obj;
 }
@@ -69,9 +72,6 @@ void st::Graph::removeVertex(const st::Graph::Vertex &v)
     const auto s = boost::vertex(v.index, this->graph);
 
     boost::remove_vertex(s, this->graph);
-
-    // Reinitialize DS structure
-//FIXME:    this->disjointSet = DisjointSetData(this->graph);
 }
 
 st::Graph::Vertex st::Graph::getVertex(int32_t index) const
@@ -108,7 +108,6 @@ void st::Graph::addEdge(const st::Graph::Edge &e)
     const auto td = boost::vertex(e.target.index, this->graph);
 
     boost::add_edge(sd, td, this->graph);
-//FIXME:    this->disjointSet.ds.union_set(sd, td);
     this->distanceBalance += e.distance;
 }
 
@@ -128,7 +127,6 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     if (ed.second == true)
     {
         boost::remove_edge(sd, td, this->graph);
-//FIXME:        this->disjointSet = DisjointSetData(this->graph);
         this->distanceBalance -= e.distance;
     }
 }
@@ -140,10 +138,10 @@ uint32_t st::Graph::getNumberOfEdges() const
 
 uint32_t st::Graph::getNumberOfComponents() const
 {
-    std::unique_ptr<DisjointSetData> ds (new DisjointSetData(this->graph));
+    DisjointSetData ds(this->graph);
 
     using Components = boost::component_index<DisjointSetData::Vertex>;
-    Components components(this->disjointSet.parent.begin(), this->disjointSet.parent.end());
+    Components components(ds.parent.begin(), ds.parent.end());
 
     return components.size();
 }

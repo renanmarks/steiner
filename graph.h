@@ -52,6 +52,7 @@ public:
     };
 
     Graph();
+    Graph(std::uint32_t nVertices);
 
     Vertex addVertex(const Vertex& v);
     Vertex updateVertex(const Vertex& old, const Vertex& newVertex);
@@ -81,8 +82,8 @@ private:
         using Vertex = boost::graph_traits<BoostGraph>::vertex_descriptor;
         using VertexSizeType = boost::graph_traits<BoostGraph>::vertices_size_type;
 
-        using Rank = Vertex*;
-        using Parent = VertexSizeType*;
+        using Rank = VertexSizeType*;
+        using Parent = Vertex*;
 
         std::vector<Vertex> parent;
         std::vector<VertexSizeType> rank;
@@ -91,8 +92,6 @@ private:
 
         DisjointSetData(const BoostGraph& _graph);
     };
-
-    DisjointSetData disjointSet;
 };
 
 }
