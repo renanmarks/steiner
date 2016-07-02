@@ -114,7 +114,6 @@ void st::Graph::addEdge(const st::Graph::Edge &e)
     const auto ed = boost::add_edge(sd, td, this->graph);
     this->graph[ed.first] = e;
     this->disjointSet.ds.union_set(sd, td);
-    this->distanceBalance += e.distance;
 }
 
 void st::Graph::updateEdge(const st::Graph::Edge &old, const st::Graph::Edge &newEdge)
@@ -134,8 +133,23 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     {
         boost::remove_edge(sd, td, this->graph);
         this->setup();
-        this->distanceBalance -= e.distance;
     }
+}
+
+std::vector<st::Graph::Edge> st::Graph::getEdges() const
+{
+    std::vector<st::Graph::Edge> returnEdges;
+
+    const auto iterators = boost::edges(this->graph);
+
+    for (auto i = iterators.first; i != iterators.second; i++)
+    {
+        const auto v = this->graph[*i];
+
+        returnEdges.push_back(v);
+    }
+
+    return returnEdges;
 }
 
 uint32_t st::Graph::getNumberOfEdges() const
@@ -157,7 +171,14 @@ bool st::Graph::areOnSameComponent(const st::Graph::Vertex &v1, const st::Graph:
 
 void st::Graph::print() const
 {
-    std::cout << "Distance   : " << this->distanceBalance << std::endl;
+    std::int32_t distance = 0;
+
+    for (const auto e : this->getEdges())
+    {
+        distance += e.getDistance();
+    }
+
+    std::cout << "Distance   : " << distance << std::endl;
 
     std::cout << "Vertices   : ";
     boost::print_vertices(this->graph, get(&st::Graph::Vertex::index, this->graph));
@@ -228,9 +249,14 @@ st::Graph::Edge::Edge()
 }
 
 st::Graph::Edge::Edge(const st::Graph::Vertex &_s, const st::Graph::Vertex &_t)
-    : source(_s), target(_t), distance(distanceManhattan2D(_s, _t)), type(getType(_s, _t))
+    : source(_s), target(_t), type(getType(_s, _t))
 {
 
+}
+
+int32_t st::Graph::Edge::getDistance() const
+{
+    return distanceManhattan2D(this->source, this->target);
 }
 
 st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)

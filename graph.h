@@ -44,11 +44,11 @@ public:
 
         Vertex source;
         Vertex target;
-        std::int32_t distance;
         Type type;
 
         Edge();
         Edge(const Vertex& _s, const Vertex& _t);
+        std::int32_t getDistance() const;
     };
 
     Graph();
@@ -65,6 +65,7 @@ public:
     void updateEdge(const Edge& old, const Edge& newEdge);
     void removeEdge(const Edge& e);
     Edge getEdge(std::int32_t s, std::int32_t t) const;
+    std::vector<Edge> getEdges() const;
     std::uint32_t getNumberOfEdges() const;
 
     std::uint32_t getNumberOfComponents() const;
