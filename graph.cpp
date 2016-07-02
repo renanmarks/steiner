@@ -111,7 +111,8 @@ void st::Graph::addEdge(const st::Graph::Edge &e)
     const auto sd = boost::vertex(e.source.index, this->graph);
     const auto td = boost::vertex(e.target.index, this->graph);
 
-    boost::add_edge(sd, td, this->graph);
+    const auto ed = boost::add_edge(sd, td, this->graph);
+    this->graph[ed.first] = e;
     this->disjointSet.ds.union_set(sd, td);
     this->distanceBalance += e.distance;
 }
