@@ -129,13 +129,14 @@ void st::Data::parseGraphSection(std::istream &file)
         }
         else if (itemName == "edges")
         {
-            this->graph.edges.reserve(std::stoi(itemValue));
+            this->graph.numberOfEdges = std::stoi(itemValue);
+            this->graph.edges.reserve(this->graph.numberOfEdges);
         }
         else if (itemName == "arcs")
         {
             this->graph.arcs.reserve(std::stoi(itemValue));
         }
-        else
+        else if (this->graph.numberOfEdges > 0)
         {
             matches = getMatches(stream, "^\\s*E\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
 
