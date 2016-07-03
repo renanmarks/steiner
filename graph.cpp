@@ -105,6 +105,19 @@ void st::Graph::removeVertex(const st::Graph::Vertex &v)
     this->setup();
 }
 
+std::vector<st::Graph::Edge> st::Graph::getIncidentEdges(const st::Graph::Vertex &v) const
+{
+    std::vector<st::Graph::Edge> edges;
+    const auto iterators = boost::out_edges(boost::vertex(v.index, this->graph), this->graph);
+
+    for (auto it = iterators.first; it != iterators.second; ++it)
+    {
+        edges.push_back(this->graph[*it]);
+    }
+
+    return edges;
+}
+
 st::Graph::Vertex st::Graph::getVertex(int32_t index) const
 {
     const auto s = boost::vertex(index, this->graph);

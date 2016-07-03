@@ -59,6 +59,7 @@ public:
     Vertex addVertex(const Vertex& v);
     Vertex updateVertex(const Vertex& old, const Vertex& newVertex);
     void removeVertex(const Vertex& v);
+    std::vector<Edge> getIncidentEdges(const Vertex& v) const;
     Vertex getVertex(std::int32_t index) const;
     std::uint32_t getVertexDegree(const Vertex& v) const;
     std::vector<Vertex> getVertices() const;
