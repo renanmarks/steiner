@@ -17,6 +17,17 @@ private:
     using Vertex = st::Graph::Vertex;
     using VertexPair = std::pair<Vertex, Vertex>;
 
+    struct EqualVertexPair : public std::equal_to<VertexPair>
+    {
+        bool operator()(const VertexPair &lhs, const VertexPair &rhs) const
+        {
+            bool same1 = (lhs.first == rhs.second) && (lhs.second == rhs.first);
+            bool same2 = (lhs.first == rhs.first) && (lhs.second == rhs.second);
+
+            return same1 || same2;
+        }
+    };
+
     struct HashVertexPair : public std::less<VertexPair>
     {
         std::size_t operator()( const VertexPair& lhs) const
@@ -42,11 +53,11 @@ private:
             std::int32_t distance1 = lhs.first.distanceTo(lhs.second);
             std::int32_t distance2 = rhs.first.distanceTo(rhs.second);
 
-            return distance1 < distance2;
+            return distance1 >= distance2;
         }
     };
 
-    using VertexPairSet = std::unordered_set<VertexPair, HashVertexPair>;
+    using VertexPairSet = std::unordered_set<VertexPair, HashVertexPair, EqualVertexPair>;
     using MinimumDistanceSet = std::priority_queue<VertexPair, std::vector<VertexPair>, LessVertexPair>;
 
     VertexPairSet vertexPairSet;
