@@ -45,6 +45,7 @@ public:
         Vertex source;
         Vertex target;
         Type type;
+        bool locked;
 
         Edge();
         Edge(const Vertex& _s, const Vertex& _t);

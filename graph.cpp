@@ -362,7 +362,7 @@ st::Graph::Edge::Edge()
 }
 
 st::Graph::Edge::Edge(const st::Graph::Vertex &_s, const st::Graph::Vertex &_t)
-    : source(_s), target(_t), type(getType(_s, _t))
+    : source(_s), target(_t), type(getType(_s, _t)), locked(false)
 {
 
 }
