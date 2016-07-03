@@ -64,24 +64,26 @@ void st::ThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
 
 void st::ThomsonConstrutive::checkAndCrystalize(const Vertex& steinerNode)
 {
-    if (steinerNode.type == Vertex::Type::CORNER)
+    Vertex updated = this->graph.getVertex(steinerNode.index);
+
+    if (updated.type == Vertex::Type::CORNER)
     {
         /* Cristalization to Steiner Nodes */
-        if ( this->graph.getVertexDegree(steinerNode) > 2 )
+        if ( this->graph.getVertexDegree(updated) > 2 )
         {
-            Vertex temp = steinerNode;
+            Vertex temp = updated;
             temp.type = Vertex::Type::STEINER;
-            this->graph.updateVertex(steinerNode, temp);
+            this->graph.updateVertex(updated, temp);
         }
     }
-    else if (steinerNode.type == Vertex::Type::STEINER)
+    else if (updated.type == Vertex::Type::STEINER)
     {
         /* Cristalization to Steiner Nodes */
-        if ( this->graph.getVertexDegree(steinerNode) == 2 )
+        if ( this->graph.getVertexDegree(updated) == 2 )
         {
-            Vertex temp = steinerNode;
+            Vertex temp = updated;
             temp.type = Vertex::Type::CORNER;
-            this->graph.updateVertex(steinerNode, temp);
+            this->graph.updateVertex(updated, temp);
         }
     }
 }
