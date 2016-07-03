@@ -93,7 +93,7 @@ std::vector<st::Graph::Vertex> st::Graph::getVertices() const
 
     for (auto i = iterators.first; i != iterators.second; i++)
     {
-        const auto& v = this->graph[*i];
+        const auto v = this->graph[*i];
 
         returnVerts.push_back(v);
     }
