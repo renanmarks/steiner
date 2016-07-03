@@ -1,6 +1,9 @@
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 #include <boost/graph/graph_utility.hpp>
 #include <boost/graph/incremental_components.hpp>
+#include <boost/graph/graphviz.hpp>
 #include "graph.h"
 
 namespace
@@ -44,6 +47,30 @@ st::Graph::Graph(uint32_t nVertices)
     : graph(nVertices), distanceBalance(0), disjointSet(graph)
 {
 
+}
+
+namespace
+{
+struct EqualVertex : public std::equal_to<st::Graph::Vertex>
+{
+    bool operator()(const st::Graph::Vertex &lhs, const st::Graph::Vertex &rhs) const
+    {
+        return ((lhs.x == rhs.x) && (lhs.y == rhs.y));
+    }
+};
+}
+
+st::Graph::Vertex st::Graph::getVertexWithCoords(const st::Graph::Vertex &v) const
+{
+    const auto vertices = this->getVertices();
+    auto const it = std::find_if(vertices.begin(), vertices.end(), [v](const st::Graph::Vertex& v2) { return EqualVertex()(v, v2); });
+
+    if (it == vertices.end())
+    {
+        return v;
+    }
+
+    return *it;
 }
 
 st::Graph::Vertex st::Graph::addVertex(const st::Graph::Vertex &v)
@@ -155,6 +182,38 @@ std::vector<st::Graph::Edge> st::Graph::getEdges() const
 uint32_t st::Graph::getNumberOfEdges() const
 {
     return boost::num_edges(this->graph);
+}
+
+void st::Graph::printGraphviz(uint32_t i) const
+{
+    std::ostringstream filename("teste");
+    filename << i << ".dot";
+
+    std::ofstream f(filename.str());
+
+    using VD = BoostGraph::vertex_descriptor;
+
+    boost::write_graphviz(f, this->graph, [this](std::ostream& out, const VD& v) {
+        const Vertex vertex = this->graph[v];
+
+        out << "[pos=\"" << vertex.x << "," << vertex.y << "!\",";
+
+        switch(vertex.type)
+        {
+        default:
+        case Vertex::Type::NODE:
+            out << "shape=\"square\"]";
+            break;
+        case Vertex::Type::CORNER:
+            out << "shape=\"diamond\"]";
+            break;
+        case Vertex::Type::STEINER:
+            out << "shape=\"circle\"]";
+            break;
+        };
+    });
+
+    f.flush();
 }
 
 uint32_t st::Graph::getNumberOfComponents() const

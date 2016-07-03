@@ -54,6 +54,7 @@ public:
     Graph();
     Graph(std::uint32_t nVertices);
 
+    Vertex getVertexWithCoords(const Vertex& v) const;
     Vertex addVertex(const Vertex& v);
     Vertex updateVertex(const Vertex& old, const Vertex& newVertex);
     void removeVertex(const Vertex& v);
@@ -67,6 +68,9 @@ public:
     Edge getEdge(std::int32_t s, std::int32_t t) const;
     std::vector<Edge> getEdges() const;
     std::uint32_t getNumberOfEdges() const;
+
+
+    void printGraphviz(std::uint32_t i) const;
 
     std::uint32_t getNumberOfComponents() const;
     bool areOnSameComponent(const Vertex& v1, const Vertex& v2);
