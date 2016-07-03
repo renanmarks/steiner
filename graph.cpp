@@ -112,6 +112,12 @@ st::Graph::Vertex st::Graph::getVertex(int32_t index) const
     return this->graph[s];
 }
 
+uint32_t st::Graph::getVertexDegree(const st::Graph::Vertex &v) const
+{
+    const auto vd = boost::vertex(v.index, this->graph);
+    return boost::degree(vd, this->graph);
+}
+
 std::vector<st::Graph::Vertex> st::Graph::getVertices() const
 {
     std::vector<st::Graph::Vertex> returnVerts;
@@ -179,17 +185,33 @@ std::vector<st::Graph::Edge> st::Graph::getEdges() const
     return returnEdges;
 }
 
+std::vector<st::Graph::Edge> st::Graph::getCollinearEdgesWithVertex(const st::Graph::Vertex &v) const
+{
+    std::vector<st::Graph::Edge> returnEdges;
+
+    const auto iterators = boost::edges(this->graph);
+
+    for (auto i = iterators.first; i != iterators.second; i++)
+    {
+        const Edge& e = this->graph[*i];
+
+        if (e.isCollinearToVertex(v))
+        {
+            returnEdges.push_back(e);
+        }
+    }
+
+    return returnEdges;
+}
+
 uint32_t st::Graph::getNumberOfEdges() const
 {
     return boost::num_edges(this->graph);
 }
 
-void st::Graph::printGraphviz(uint32_t i) const
+void st::Graph::printGraphviz(const std::string& filename) const
 {
-    std::ostringstream filename("teste");
-    filename << i << ".dot";
-
-    std::ofstream f(filename.str());
+    std::ofstream f(filename);
 
     using VD = BoostGraph::vertex_descriptor;
 
@@ -311,6 +333,25 @@ st::Graph::Edge::Edge(const st::Graph::Vertex &_s, const st::Graph::Vertex &_t)
     : source(_s), target(_t), type(getType(_s, _t))
 {
 
+}
+
+bool st::Graph::Edge::isCollinearToVertex(const st::Graph::Vertex &v) const
+{
+    if (this->type == Edge::Type::NONE)
+    {
+        return false;
+    }
+
+    if (this->type == Edge::Type::HORIZONTAL)
+    {
+        const auto minmax = std::minmax(this->source.x, this->target.x);
+
+        return ((minmax.first < v.x) && (v.x < minmax.second));
+    }
+
+    const auto minmax = std::minmax(this->source.y, this->target.y);
+
+    return ((minmax.first < v.y) && (v.y < minmax.second));
 }
 
 int32_t st::Graph::Edge::getDistance() const

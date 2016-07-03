@@ -48,6 +48,7 @@ public:
 
         Edge();
         Edge(const Vertex& _s, const Vertex& _t);
+        bool isCollinearToVertex(const Vertex& v) const;
         std::int32_t getDistance() const;
     };
 
@@ -59,6 +60,7 @@ public:
     Vertex updateVertex(const Vertex& old, const Vertex& newVertex);
     void removeVertex(const Vertex& v);
     Vertex getVertex(std::int32_t index) const;
+    std::uint32_t getVertexDegree(const Vertex& v) const;
     std::vector<Vertex> getVertices() const;
     std::uint32_t getNumberOfVertices() const;
 
@@ -67,10 +69,11 @@ public:
     void removeEdge(const Edge& e);
     Edge getEdge(std::int32_t s, std::int32_t t) const;
     std::vector<Edge> getEdges() const;
+    std::vector<Edge> getCollinearEdgesWithVertex(const Vertex& v) const;
     std::uint32_t getNumberOfEdges() const;
 
 
-    void printGraphviz(std::uint32_t i) const;
+    void printGraphviz(const std::string &filename) const;
 
     std::uint32_t getNumberOfComponents() const;
     bool areOnSameComponent(const Vertex& v1, const Vertex& v2);
