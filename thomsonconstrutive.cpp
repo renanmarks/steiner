@@ -1,7 +1,7 @@
 #include "thomsonconstrutive.h"
 #include <iostream>
 
-st::ModThomsonConstrutive::VertexPair st::ModThomsonConstrutive::getMinDistanceVertices()
+st::ThomsonConstrutive::VertexPair st::ThomsonConstrutive::getMinDistanceVertices()
 {
     if (this->vertexPairSet.size() > 0)
     {
@@ -19,7 +19,7 @@ st::ModThomsonConstrutive::VertexPair st::ModThomsonConstrutive::getMinDistanceV
     return VertexPair(Vertex(), Vertex());
 }
 
-void st::ModThomsonConstrutive::loadVertices()
+void st::ThomsonConstrutive::loadVertices()
 {
     /* Setup de vertices */
     for (const auto index : this->data->terminal.terminals)
@@ -43,7 +43,7 @@ void st::ModThomsonConstrutive::loadVertices()
     setupDistanceHeap(vertices);
 }
 
-void st::ModThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
+void st::ThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
 {
 //    this->vertexPairSet.clear();
     this->minDistanceHeap = MinimumDistanceSet();
@@ -64,7 +64,7 @@ void st::ModThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
     }
 }
 
-void st::ModThomsonConstrutive::checkAndCrystalize(const Vertex& steinerNode)
+void st::ThomsonConstrutive::checkAndCrystalize(const Vertex& steinerNode)
 {
     if (steinerNode.type == Vertex::Type::CORNER)
     {
@@ -88,7 +88,7 @@ void st::ModThomsonConstrutive::checkAndCrystalize(const Vertex& steinerNode)
     }
 }
 
-void st::ModThomsonConstrutive::connect(const st::ModThomsonConstrutive::VertexPair &pair)
+void st::ThomsonConstrutive::connect(const st::ThomsonConstrutive::VertexPair &pair)
 {
     /* Collinear vertices */
     if ((pair.first.x == pair.second.x) || (pair.first.y == pair.second.y))
@@ -113,13 +113,13 @@ void st::ModThomsonConstrutive::connect(const st::ModThomsonConstrutive::VertexP
     connect({corner, pair.second});
 }
 
-st::ModThomsonConstrutive::ModThomsonConstrutive(const st::Data &_data)
+st::ThomsonConstrutive::ThomsonConstrutive(const st::Data &_data)
     : graph(_data.terminal.terminals.size()), vertexPairSet(), data(&_data)
 {
     loadVertices();
 }
 
-st::Graph st::ModThomsonConstrutive::run()
+st::Graph st::ThomsonConstrutive::run()
 {
     for (Graph::Edge e : this->graph.getEdges() )
     {
