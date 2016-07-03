@@ -75,7 +75,7 @@ public:
     void setup();
 
 private:
-    using BoostGraph = boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, Vertex, Edge>;
+    using BoostGraph = boost::adjacency_list<boost::setS, boost::vecS, boost::undirectedS, Vertex, Edge>;
     BoostGraph graph;
 
     std::int32_t distanceBalance;
