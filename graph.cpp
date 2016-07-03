@@ -250,7 +250,7 @@ bool st::Graph::areOnSameComponent(const st::Graph::Vertex &v1, const st::Graph:
     return (this->disjointSet.ds.find_set(v1.index) == this->disjointSet.ds.find_set(v2.index));
 }
 
-void st::Graph::print() const
+uint32_t st::Graph::getDistance() const
 {
     std::int32_t distance = 0;
 
@@ -259,7 +259,12 @@ void st::Graph::print() const
         distance += e.getDistance();
     }
 
-    std::cout << "Distance   : " << distance << std::endl;
+    return distance;
+}
+
+void st::Graph::print() const
+{
+    std::cout << "Distance   : " << this->getDistance() << std::endl;
 
     std::cout << "Vertices   : ";
     boost::print_vertices(this->graph, get(&st::Graph::Vertex::index, this->graph));

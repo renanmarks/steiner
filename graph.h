@@ -72,11 +72,11 @@ public:
     std::vector<Edge> getCollinearEdgesWithVertex(const Vertex& v) const;
     std::uint32_t getNumberOfEdges() const;
 
-
     void printGraphviz(const std::string &filename) const;
 
     std::uint32_t getNumberOfComponents() const;
     bool areOnSameComponent(const Vertex& v1, const Vertex& v2);
+    std::uint32_t getDistance() const;
 
     void print() const;
     void setup();
