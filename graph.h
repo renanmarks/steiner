@@ -68,6 +68,7 @@ public:
     void addEdge(const Edge& e);
     void updateEdge(const Edge& old, const Edge& newEdge);
     void removeEdge(const Edge& e);
+    Edge getEdge(std::int32_t e) const;
     Edge getEdge(std::int32_t s, std::int32_t t) const;
     std::vector<Edge> getEdges() const;
     std::vector<Edge> getCollinearEdgesWithVertex(const Vertex& v) const;

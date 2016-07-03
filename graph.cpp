@@ -182,6 +182,20 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     }
 }
 
+st::Graph::Edge st::Graph::getEdge(int32_t e) const
+{
+    const auto iterators = boost::edges(this->graph);
+    auto it = iterators.first;
+    std::int32_t i = 0;
+
+    while ((it != iterators.second) && (i < e))
+    {
+        ++it;
+    }
+
+    return this->graph[*it];
+}
+
 std::vector<st::Graph::Edge> st::Graph::getEdges() const
 {
     std::vector<st::Graph::Edge> returnEdges;
