@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     }
 
     data.load(file);
-    data.print(std::cout);
+//    data.print(std::cout);
 
     st::ThomsonConstrutive a(data);
     st::Graph tree = a.run();
