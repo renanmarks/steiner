@@ -70,6 +70,7 @@ private:
     void connect(const VertexPair& pair);
 
     void setupDistanceHeap(const std::vector<Vertex> &l);
+    void checkAndCrystalize(const Vertex &steinerNode);
 
 public:
     ModThomsonConstrutive(const st::Data& _data);

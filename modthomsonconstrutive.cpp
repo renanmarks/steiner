@@ -64,6 +64,30 @@ void st::ModThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
     }
 }
 
+void st::ModThomsonConstrutive::checkAndCrystalize(const Vertex& steinerNode)
+{
+    if (steinerNode.type == Vertex::Type::CORNER)
+    {
+        /* Cristalization to Steiner Nodes */
+        if ( this->graph.getVertexDegree(steinerNode) > 2 )
+        {
+            Vertex temp = steinerNode;
+            temp.type = Vertex::Type::STEINER;
+            this->graph.updateVertex(steinerNode, temp);
+        }
+    }
+    else if (steinerNode.type == Vertex::Type::STEINER)
+    {
+        /* Cristalization to Steiner Nodes */
+        if ( this->graph.getVertexDegree(steinerNode) == 2 )
+        {
+            Vertex temp = steinerNode;
+            temp.type = Vertex::Type::CORNER;
+            this->graph.updateVertex(steinerNode, temp);
+        }
+    }
+}
+
 void st::ModThomsonConstrutive::connect(const st::ModThomsonConstrutive::VertexPair &pair)
 {
     /* Collinear vertices */
