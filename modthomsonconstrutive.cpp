@@ -136,7 +136,5 @@ st::Graph st::ModThomsonConstrutive::run()
         components = this->graph.getNumberOfComponents();
     }
 
-    this->graph.printGraphviz(this->data->comment.name + "_st.dot");
-
     return this->graph;
 }

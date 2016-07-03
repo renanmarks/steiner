@@ -41,8 +41,10 @@ int main(int argc, char* argv[])
     data.print(std::cout);
 
     st::ModThomsonConstrutive a(data);
+    st::Graph tree = a.run();
 
-    a.run().print();
+    std::cout << tree.getDistance() << std::endl;
+    tree.printGraphviz(data.comment.name + "_st.dot");
 
 
     return 0;
