@@ -45,8 +45,6 @@ void st::ThomsonConstrutive::loadVertices()
 
 void st::ThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
 {
-//    this->vertexPairSet.clear();
-    this->minDistanceHeap = MinimumDistanceSet();
     const auto l2 = this->graph.getVertices();
 
     for (const Vertex i : l)
@@ -54,13 +52,13 @@ void st::ThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
         for (const Vertex j : l2 )
         {
             VertexPair temp = std::make_pair( i, j );
-            vertexPairSet.insert(temp);
-        }
-    }
 
-    for (const VertexPair p : vertexPairSet)
-    {
-        minDistanceHeap.push(p);
+            if (vertexPairSet.find(temp) == vertexPairSet.end())
+            {
+                vertexPairSet.insert(temp);
+                minDistanceHeap.push(temp);
+            }
+        }
     }
 }
 
