@@ -2,7 +2,7 @@
 #include <fstream>
 #include "data.h"
 #include "graph.h"
-#include "modthomsonconstrutive.h"
+#include "thomsonconstrutive.h"
 
 int main(int argc, char* argv[])
 {
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     data.load(file);
     data.print(std::cout);
 
-    st::ModThomsonConstrutive a(data);
+    st::ThomsonConstrutive a(data);
     st::Graph tree = a.run();
 
     std::cout << tree.getDistance() << std::endl;

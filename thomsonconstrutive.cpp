@@ -1,4 +1,4 @@
-#include "modthomsonconstrutive.h"
+#include "thomsonconstrutive.h"
 #include <iostream>
 
 st::ModThomsonConstrutive::VertexPair st::ModThomsonConstrutive::getMinDistanceVertices()
@@ -117,14 +117,18 @@ st::ModThomsonConstrutive::ModThomsonConstrutive(const st::Data &_data)
     : graph(_data.terminal.terminals.size()), vertexPairSet(), data(&_data)
 {
     loadVertices();
-    this->graph.setup();
 }
 
 st::Graph st::ModThomsonConstrutive::run()
 {
-    std::uint32_t components = this->graph.getNumberOfComponents();
+    for (Graph::Edge e : this->graph.getEdges() )
+    {
+        this->graph.removeEdge(e);
+    }
 
-    while (components > 1)
+    this->graph.setup();
+
+    while (this->graph.getNumberOfComponents() > 1)
     {
         VertexPair pair = getMinDistanceVertices();
 
@@ -132,8 +136,6 @@ st::Graph st::ModThomsonConstrutive::run()
         {
             connect(pair);
         }
-
-        components = this->graph.getNumberOfComponents();
     }
 
     return this->graph;

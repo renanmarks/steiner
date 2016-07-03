@@ -9,7 +9,7 @@
 namespace st
 {
 
-class ModThomsonConstrutive : public st::IRSTAlgorithm
+class ThomsonConstrutive : public st::IRSTAlgorithm
 {
 private:
     st::Graph graph;
@@ -73,7 +73,7 @@ private:
     void checkAndCrystalize(const Vertex &steinerNode);
 
 public:
-    ModThomsonConstrutive(const st::Data& _data);
+    ThomsonConstrutive(const st::Data& _data);
 
     // IRSTAlgorithm interface
 public:
