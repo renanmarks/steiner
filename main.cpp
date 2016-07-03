@@ -1,6 +1,8 @@
-#include "data.h"
 #include <iostream>
 #include <fstream>
+#include "data.h"
+#include "graph.h"
+#include "thomsonconstrutive.h"
 
 int main(int argc, char* argv[])
 {
@@ -36,8 +38,14 @@ int main(int argc, char* argv[])
     }
 
     data.load(file);
+//    data.print(std::cout);
 
-    data.print(std::cout);
+    st::ThomsonConstrutive a(data);
+    st::Graph tree = a.run();
+
+    std::cout << tree.getDistance() << std::endl;
+    tree.printGraphviz(data.comment.name + "_st.dot");
+
 
     return 0;
 }

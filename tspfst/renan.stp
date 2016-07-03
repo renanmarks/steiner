@@ -1,0 +1,41 @@
+33d32945 STP File, STP Format Version 1.00
+Section Comment
+Name    "renan"
+Creator "Renan Marks"
+Remark  "Simple test input"
+End
+
+Section Graph
+Nodes 10
+Edges 0
+
+End
+
+Section Terminals
+Terminals 7
+T 1
+T 2
+T 3
+T 4
+T 5
+T 6
+T 7
+T 8
+T 9
+T 10
+End
+
+Section Coordinates
+DD 1 0 25
+DD 2 5 10
+DD 3 10 15
+DD 4 15 20
+DD 5 20 25
+DD 6 20 0
+DD 7 15 5
+DD 8 2 6
+DD 9 12 16
+DD 10 8 13
+End
+
+EOF

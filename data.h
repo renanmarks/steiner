@@ -58,6 +58,7 @@ public:
 
         std::uint32_t numberOfObstacles;
         std::uint32_t numberOfNodes;
+        std::uint32_t numberOfEdges;
         std::vector<Edge> edges;
         std::vector<Arc> arcs;
 

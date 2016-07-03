@@ -48,6 +48,11 @@ namespace
 
         return returnStr;
     }
+
+    inline std::int32_t convertToVertexIndex(std::int32_t i)
+    {
+        return i - 1;
+    }
 }
 
 bool st::Data::parseHeader(std::istream &file)
@@ -124,18 +129,19 @@ void st::Data::parseGraphSection(std::istream &file)
         }
         else if (itemName == "edges")
         {
-            this->graph.edges.reserve(std::stoi(itemValue));
+            this->graph.numberOfEdges = std::stoi(itemValue);
+            this->graph.edges.reserve(this->graph.numberOfEdges);
         }
         else if (itemName == "arcs")
         {
             this->graph.arcs.reserve(std::stoi(itemValue));
         }
-        else
+        else if (this->graph.numberOfEdges > 0)
         {
             matches = getMatches(stream, "^\\s*E\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
 
-            std::uint32_t first = std::stoi(matches[0]);
-            std::uint32_t second = std::stoi(matches[1]);
+            std::uint32_t first  = convertToVertexIndex(std::stoi(matches[0]));
+            std::uint32_t second = convertToVertexIndex(std::stoi(matches[1]));
             std::uint32_t weight = std::stoi(matches[2]);
 
             if (itemName == "e")
@@ -181,7 +187,7 @@ void st::Data::parseTerminalsSection(std::istream &file)
         }
         else if (itemName == "t")
         {
-            this->terminal.terminals.push_back(std::stoi(itemValue));
+            this->terminal.terminals.push_back(convertToVertexIndex(std::stoi(itemValue)));
         }
     }
 
@@ -199,7 +205,7 @@ void st::Data::parseCoordinatesSection(std::istream &file)
         std::istringstream stream(line);
         std::vector<std::string> matches = getMatches(stream, "^\\s*D+\\s*(\\d+)\\s*(\\d+)\\s*(\\d+)\\s*$");
 
-        const std::uint32_t coordIndex  = std::stoi(matches[0]) - 1;
+        const std::uint32_t coordIndex  = convertToVertexIndex(std::stoi(matches[0]));
         const double coordX             = std::stod(matches[1]);
         const double coordY             = std::stod(matches[2]);
 
