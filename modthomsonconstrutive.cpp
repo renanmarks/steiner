@@ -45,11 +45,11 @@ void st::ModThomsonConstrutive::loadVertices()
 
 void st::ModThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
 {
-    this->vertexPairSet.clear();
+//    this->vertexPairSet.clear();
     this->minDistanceHeap = MinimumDistanceSet();
     const auto l2 = this->graph.getVertices();
 
-    for (const Vertex i : l2)
+    for (const Vertex i : l)
     {
         for (const Vertex j : l2 )
         {
@@ -95,29 +95,22 @@ void st::ModThomsonConstrutive::connect(const st::ModThomsonConstrutive::VertexP
     {
         setupDistanceHeap({ pair.first, pair.second });
         Graph::Edge edge(pair.first, pair.second);
-        /* Need to check the "crystalization" of corner node to steiner node*/
-        this->graph.addEdge(edge);
-        return;
-    }
 
-    if (pair.first.type == Vertex::Type::CORNER || pair.second.type == Vertex::Type::CORNER)
-    {
-        std::cout << "Vish" << pair.first.index << " " << pair.second.index << std::endl;
+        this->graph.addEdge(edge);
+
+        /* Need to check the "crystalization" of corner node to steiner node*/
+        checkAndCrystalize(pair.first);
+        checkAndCrystalize(pair.second);
+
+        return;
     }
 
     /* Need to make a corner */
     Vertex corner( pair.first.x, pair.second.y, Vertex::Type::CORNER );
-    //corner = this->graph.getVertexWithCoords(corner);
-
-    //if (corner.index == -1)
-    //{
-        corner = this->graph.addVertex(corner);
-    //}
+    corner = this->graph.addVertex(corner);
 
     connect({corner, pair.first});
     connect({corner, pair.second});
-    //this->graph.addEdge(Graph::Edge(pair.first, corner));
-    //this->graph.addEdge(Graph::Edge(pair.second, corner));
 }
 
 st::ModThomsonConstrutive::ModThomsonConstrutive(const st::Data &_data)
@@ -138,13 +131,12 @@ st::Graph st::ModThomsonConstrutive::run()
         if (this->graph.areOnSameComponent(pair.first, pair.second) == false)
         {
             connect(pair);
-            //this->graph.addEdge(Graph::Edge(pair.first, pair.second));
         }
 
         components = this->graph.getNumberOfComponents();
     }
 
-    this->graph.printGraphviz(1);
+    this->graph.printGraphviz(this->data->comment.name + "_st.dot");
 
     return this->graph;
 }
