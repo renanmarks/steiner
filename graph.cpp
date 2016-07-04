@@ -100,7 +100,19 @@ void st::Graph::removeVertex(const st::Graph::Vertex &v)
 {
     const auto s = boost::vertex(v.index, this->graph);
 
+    boost::clear_vertex(s, this->graph);
     boost::remove_vertex(s, this->graph);
+
+    const auto iterators = boost::vertices(this->graph);
+
+    for (auto i = iterators.first; i != iterators.second; i++)
+    {
+        const auto index = *i;
+        const auto oldVertex = this->graph[index];
+        auto newVertex = oldVertex;
+        newVertex.index = index;
+        this->graph[index] = newVertex;
+    }
 
     this->setup();
 }
