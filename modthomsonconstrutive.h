@@ -1,5 +1,5 @@
-#ifndef THOMSONCONSTRUTIVE_H
-#define THOMSONCONSTRUTIVE_H
+#ifndef MODTHOMSONCONSTRUTIVE_H
+#define MODTHOMSONCONSTRUTIVE_H
 
 #include <unordered_set>
 #include <queue>
@@ -9,7 +9,7 @@
 namespace st
 {
 
-class ThomsonConstrutive : public st::IRSTAlgorithm
+class ModThomsonConstrutive : public st::IRSTAlgorithm
 {
 private:
     st::Graph graph;
@@ -58,22 +58,23 @@ private:
     };
 
     using VertexPairSet = std::unordered_set<VertexPair, HashVertexPair, EqualVertexPair>;
-    using MinimumDistanceSet = std::priority_queue<VertexPair, std::vector<VertexPair>, LessVertexPair>;
+    using MinimumDistanceHeap = std::priority_queue<VertexPair, std::vector<VertexPair>, LessVertexPair>;
 
     VertexPairSet vertexPairSet;
-    MinimumDistanceSet minDistanceHeap;
+    MinimumDistanceHeap minDistanceHeap;
 
     const st::Data* data;
 
-    VertexPair getMinDistanceVertices();
+    VertexPair getMinDistanceVertices(const Vertex &v);
     void loadVertices();
     void connect(const VertexPair& pair);
 
     void setupDistanceHeap(const std::vector<Vertex> &l);
     void checkAndCrystalize(const Vertex &steinerNode);
 
+    st::Graph::Vertex getRandomVertex() const;
 public:
-    ThomsonConstrutive(const st::Data& _data);
+    ModThomsonConstrutive(const st::Data& _data);
 
     // IRSTAlgorithm interface
 public:
@@ -82,4 +83,4 @@ public:
 
 }
 
-#endif // THOMSONCONSTRUTIVE_H
+#endif // MODTHOMSONCONSTRUTIVE_H
