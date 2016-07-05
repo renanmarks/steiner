@@ -319,7 +319,7 @@ void st::Graph::print() const
 
 void st::Graph::setup()
 {
-    this->disjointSet.setup();
+    this->disjointSet = DisjointSetData(this->graph);
 }
 
 
@@ -404,7 +404,7 @@ int32_t st::Graph::Edge::getDistance() const
 }
 
 st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)
-    : rank(boost::num_vertices(_graph)), parent(boost::num_vertices(_graph)), ds(&rank[0], &parent[0]), graph(_graph)
+    : rank(boost::num_vertices(_graph)), parent(boost::num_vertices(_graph)), ds(&rank[0], &parent[0]), graph(&_graph)
 {
     boost::initialize_incremental_components(_graph, ds);
     boost::incremental_components(_graph, ds);
@@ -412,11 +412,11 @@ st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)
 
 void st::Graph::DisjointSetData::setup()
 {
-    rank.resize(boost::num_vertices(this->graph));
-    parent.resize(boost::num_vertices(this->graph));
+    rank.resize(boost::num_vertices(*this->graph));
+    parent.resize(boost::num_vertices(*this->graph));
 
     ds = DisjointSet(&rank[0], &parent[0]);
 
-    boost::initialize_incremental_components(this->graph, ds);
-    boost::incremental_components(this->graph, ds);
+    boost::initialize_incremental_components(*this->graph, ds);
+    boost::incremental_components(*this->graph, ds);
 }

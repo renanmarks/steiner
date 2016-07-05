@@ -104,7 +104,7 @@ private:
         using DisjointSet = boost::disjoint_sets<Rank, Parent>;
         DisjointSet ds;
 
-        const BoostGraph& graph;
+        const BoostGraph* graph;
 
         DisjointSetData(const BoostGraph& _graph);
         void setup();
