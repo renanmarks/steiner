@@ -26,17 +26,19 @@ private:
 
     using MinimumDistanceSet = std::priority_queue<Graph, std::vector<Graph>, LowerDistanceTree>;
     MinimumDistanceSet minDistanceTrees;
+    Graph minDistanceTree;
 
     Graph tree;
 
-    void removeVertex(Vertex s, Graph &tree);
-    void removeSteinerLeafs(Graph &graph);
-    void buildLocalTrees();
-    void connect(const VertexPair &pair, Graph &graph);
-    void checkAndCrystalize(const Vertex &steinerNode, Graph &graph);
+    void removeVertex(Vertex s, Graph &tree) const;
+    void removeSteinerLeafs(Graph &graph) const;
+    Graph buildLocalTrees() const;
+    void connect(const VertexPair &pair, Graph &graph) const;
+    void checkAndCrystalize(const Vertex &steinerNode, Graph &graph) const;
 public:
     EdgeOrientedLocalSearch(const Graph& _tree);
 
+    std::vector<Graph> getValidNeighbourMoves() const;
     // IRSTAlgorithm interface
 public:
     st::Graph run();

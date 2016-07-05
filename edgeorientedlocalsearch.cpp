@@ -8,7 +8,43 @@ st::EdgeOrientedLocalSearch::EdgeOrientedLocalSearch(const st::Graph &_tree)
 
 }
 
-void st::EdgeOrientedLocalSearch::removeVertex(st::Graph::Vertex s, Graph& tree)
+std::vector<st::Graph> st::EdgeOrientedLocalSearch::getValidNeighbourMoves() const
+{
+    std::vector<st::Graph> localNeighbours;
+    localNeighbours.reserve(this->tree.getNumberOfEdges());
+
+    Graph bestTree = this->tree;
+
+    for (const Edge& edge : this->tree.getEdges())
+    {
+        Graph workTree = this->tree;
+        std::uint32_t oldDistance = workTree.getDistance();
+        workTree.removeEdge(edge);
+        this->removeSteinerLeafs(workTree);
+
+        auto components = workTree.getComponents();
+
+        for (const auto& vertexFromC0 : components[0])
+        {
+            for (const auto& vertexFromC1 : components[1])
+            {
+                std::uint32_t newDistance = workTree.getDistance() + Edge(vertexFromC0, vertexFromC1).getDistance();
+
+                if (newDistance < oldDistance)
+                {
+                    Graph newTree = workTree;
+                    this->connect({vertexFromC0, vertexFromC1}, newTree);
+                    bestTree = newTree;
+                    localNeighbours.push_back(bestTree);
+                }
+            }
+        }
+    }
+
+    return localNeighbours;
+}
+
+void st::EdgeOrientedLocalSearch::removeVertex(st::Graph::Vertex s, Graph& tree) const
 {
     auto edges = tree.getIncidentEdges(s);
 
@@ -20,7 +56,7 @@ void st::EdgeOrientedLocalSearch::removeVertex(st::Graph::Vertex s, Graph& tree)
     tree.removeVertex(s);
 }
 
-void st::EdgeOrientedLocalSearch::removeSteinerLeafs(Graph& tree)
+void st::EdgeOrientedLocalSearch::removeSteinerLeafs(Graph& tree) const
 {
     bool changed = true;
 
@@ -39,7 +75,7 @@ void st::EdgeOrientedLocalSearch::removeSteinerLeafs(Graph& tree)
     }
 }
 
-void st::EdgeOrientedLocalSearch::checkAndCrystalize(const Vertex& steinerNode, Graph& graph)
+void st::EdgeOrientedLocalSearch::checkAndCrystalize(const Vertex& steinerNode, Graph& graph) const
 {
     Vertex updated = graph.getVertex(steinerNode.index);
 
@@ -65,7 +101,7 @@ void st::EdgeOrientedLocalSearch::checkAndCrystalize(const Vertex& steinerNode, 
     }
 }
 
-void st::EdgeOrientedLocalSearch::connect(const st::EdgeOrientedLocalSearch::VertexPair &pair, Graph& graph)
+void st::EdgeOrientedLocalSearch::connect(const st::EdgeOrientedLocalSearch::VertexPair &pair, Graph& graph) const
 {
     /* Collinear vertices */
     if ((pair.first.x == pair.second.x) || (pair.first.y == pair.second.y))
@@ -89,7 +125,7 @@ void st::EdgeOrientedLocalSearch::connect(const st::EdgeOrientedLocalSearch::Ver
     connect({corner, pair.second}, graph);
 }
 
-void st::EdgeOrientedLocalSearch::buildLocalTrees()
+st::Graph st::EdgeOrientedLocalSearch::buildLocalTrees() const
 {
     Graph bestTree = this->tree;
 
@@ -118,12 +154,10 @@ void st::EdgeOrientedLocalSearch::buildLocalTrees()
         }
     }
 
-    this->minDistanceTrees.push(bestTree);
+    return bestTree;
 }
 
 st::Graph st::EdgeOrientedLocalSearch::run()
 {
-    this->buildLocalTrees();
-
-    return this->minDistanceTrees.top();
+    return this->buildLocalTrees();
 }
