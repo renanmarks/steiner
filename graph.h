@@ -51,6 +51,9 @@ public:
         Edge(const Vertex& _s, const Vertex& _t);
         bool isCollinearToVertex(const Vertex& v) const;
         std::int32_t getDistance() const;
+
+        bool operator==(const Edge& other) const;
+        bool operator!=(const Edge& other) const;
     };
 
     Graph();
@@ -84,6 +87,9 @@ public:
 
     void print() const;
     void setup();
+
+    bool operator==(const Graph& other) const;
+    bool operator!=(const Graph& other) const;
 
 private:
     using BoostGraph = boost::adjacency_list<boost::setS, boost::vecS, boost::undirectedS, Vertex, Edge>;

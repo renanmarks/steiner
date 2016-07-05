@@ -339,6 +339,30 @@ void st::Graph::setup()
     this->disjointSet = DisjointSetData(this->graph);
 }
 
+bool st::Graph::operator==(const st::Graph &other) const
+{
+    auto itsThis = boost::edges(this->graph);
+    auto itsOther = boost::edges(other.graph);
+
+    for(auto itThis = itsThis.first,
+        itOther = itsOther.first;
+        (itThis != itsThis.second) &&
+        (itOther != itsOther.second);
+        ++itThis, ++itOther)
+    {
+        if (this->graph[*itThis] != this->graph[*itOther])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool st::Graph::operator!=(const st::Graph &other) const
+{
+    return !(*this == other);
+}
 
 st::Graph::Vertex::Vertex()
     : Vertex(0, 0)
@@ -418,6 +442,22 @@ bool st::Graph::Edge::isCollinearToVertex(const st::Graph::Vertex &v) const
 int32_t st::Graph::Edge::getDistance() const
 {
     return distanceManhattan2D(this->source, this->target);
+}
+
+bool st::Graph::Edge::operator==(const st::Graph::Edge &other) const
+{
+    bool sameSourceSource = this->source == other.source;
+    bool sameTargetTarget = this->target == other.target;
+    bool sameSourceTarget = this->source == other.target;
+    bool sameTargetSource = this->target == other.source;
+    bool sameType = this->type == other.type;
+
+    return sameType && ((sameSourceSource && sameTargetTarget) || (sameSourceTarget && sameTargetSource));
+}
+
+bool st::Graph::Edge::operator!=(const st::Graph::Edge &other) const
+{
+    return !(*this == other);
 }
 
 st::Graph::DisjointSetData::DisjointSetData(const BoostGraph &_graph)
