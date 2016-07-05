@@ -203,6 +203,7 @@ st::Graph::Edge st::Graph::getEdge(int32_t e) const
     while ((it != iterators.second) && (i < e))
     {
         ++it;
+        ++i;
     }
 
     return this->graph[*it];
