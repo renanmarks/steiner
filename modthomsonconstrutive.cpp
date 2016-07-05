@@ -46,8 +46,6 @@ void st::ModThomsonConstrutive::loadVertices()
 
 void st::ModThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
 {
-    vertexPairSet.clear();
-    minDistanceHeap = MinimumDistanceHeap();
     std::vector<Vertex> l2;
 
     for (const auto& v : this->graph.getVertices())
