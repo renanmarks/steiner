@@ -78,6 +78,7 @@ public:
     void printGraphviz(const std::string &filename) const;
 
     std::uint32_t getNumberOfComponents() const;
+    std::vector<std::vector<Vertex> > getComponents() const;
     bool areOnSameComponent(const Vertex& v1, const Vertex& v2);
     std::uint32_t getDistance() const;
 

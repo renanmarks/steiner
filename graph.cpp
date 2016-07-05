@@ -285,6 +285,27 @@ uint32_t st::Graph::getNumberOfComponents() const
     return components.size();
 }
 
+std::vector<std::vector<st::Graph::Vertex>> st::Graph::getComponents() const
+{
+    using Components = boost::component_index<DisjointSetData::Vertex>;
+    Components components(this->disjointSet.parent.begin(), this->disjointSet.parent.end());
+
+    std::vector<std::vector<st::Graph::Vertex>> returnVector(components.size());
+
+    for (auto it = components.begin(); it != components.end(); ++it)
+    {
+        auto iterators = components[*it];
+
+        for(auto it2 = iterators.first; it2 != iterators.second; ++it2)
+        {
+            Vertex v = this->getVertex(*it2);
+            returnVector.at(*it).push_back(v);
+        }
+    }
+
+    return returnVector;
+}
+
 bool st::Graph::areOnSameComponent(const st::Graph::Vertex &v1, const st::Graph::Vertex &v2)
 {
     return (this->disjointSet.ds.find_set(v1.index) == this->disjointSet.ds.find_set(v2.index));
