@@ -13,16 +13,9 @@ st::ThomsonConstrutive::VertexPair st::ThomsonConstrutive::getRandomDistanceVert
         std::int32_t value = dist(mt);
         VertexPair pair;
 
-        for (std::int32_t i = 0; i < value; i++)
+        for (std::int32_t i = 0; i <= value; i++)
         {
-            pair = minDistanceHeap.top();
-            const auto it = this->vertexPairSet.find(pair);
-
-            if (it != this->vertexPairSet.end() )
-            {
-                this->vertexPairSet.erase( it );
-                minDistanceHeap.pop();
-            }
+            pair = getMinDistanceVertices();
         }
 
         return pair;
@@ -175,6 +168,7 @@ st::Graph st::ThomsonConstrutive::run()
         else
         {
             pair = getRandomDistanceVertices();
+            this->setupDistanceHeap(this->graph.getVertices());
             this->randomStart = false;
         }
 
