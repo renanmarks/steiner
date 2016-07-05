@@ -74,6 +74,11 @@ void st::ThomsonConstrutive::setupDistanceHeap( const std::vector<Vertex>& l)
     {
         for (const Vertex j : l2 )
         {
+            if (i == j)
+            {
+                continue;
+            }
+
             VertexPair temp = std::make_pair( i, j );
 
             if (vertexPairSet.find(temp) == vertexPairSet.end())
