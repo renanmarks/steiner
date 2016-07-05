@@ -8,32 +8,31 @@ st::EdgeOrientedLocalSearch::EdgeOrientedLocalSearch(const st::Graph &_tree)
 
 }
 
-void st::EdgeOrientedLocalSearch::removeVertex(st::Graph::Vertex s)
+void st::EdgeOrientedLocalSearch::removeVertex(st::Graph::Vertex s, Graph& tree)
 {
-    auto edges = this->tree.getIncidentEdges(s);
+    auto edges = tree.getIncidentEdges(s);
 
     for (auto e : edges)
     {
-        this->tree.removeEdge(e);
+        tree.removeEdge(e);
     }
 
-    this->tree.removeVertex(s);
+    tree.removeVertex(s);
 }
 
-void st::EdgeOrientedLocalSearch::removeSteinerLeafs()
+void st::EdgeOrientedLocalSearch::removeSteinerLeafs(Graph& tree)
 {
-    auto vertices = this->tree.getVertices();
     bool changed = true;
 
     while(changed == true)
     {
         changed = false;
 
-        for (auto v : vertices)
+        for (auto v : tree.getVertices())
         {
-            if ((v.type == Vertex::Type::STEINER || v.type == Vertex::Type::CORNER) && (this->tree.getVertexDegree(v) == 1))
+            if ((v.type == Vertex::Type::STEINER || v.type == Vertex::Type::CORNER) && (tree.getVertexDegree(v) == 1))
             {
-                removeVertex(v);
+                removeVertex(v, tree);
                 changed = true;
             }
         }
@@ -94,33 +93,27 @@ void st::EdgeOrientedLocalSearch::buildLocalTrees()
 {
     Graph bestTree = this->tree;
 
-    // First node
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_int_distribution<> dist(0, this->tree.getNumberOfEdges()-1);
-    std::int32_t randomIndex = dist(mt);
-
-    Edge randomEdge = this->tree.getEdge(randomIndex);
-
-    this->tree.removeEdge(randomEdge);
-    this->removeSteinerLeafs();
-
-    auto components = this->tree.getComponents();
-    std::vector<Graph> localSearchedTrees;
-    std::int32_t numberOfVariantTrees = components[0].size() * components[1].size();
-    localSearchedTrees.reserve(numberOfVariantTrees);
-
-    for (auto vertexFromC0 : components[0])
+    for (const Edge& edge : this->tree.getEdges())
     {
-        for (auto vertexFromC1 : components[1])
+        Graph workTree = this->tree;
+        std::uint32_t oldDistance = workTree.getDistance();
+        workTree.removeEdge(edge);
+        this->removeSteinerLeafs(workTree);
+
+        auto components = workTree.getComponents();
+
+        for (const auto& vertexFromC0 : components[0])
         {
-            Graph newTree = this->tree;
-
-            this->connect({vertexFromC0, vertexFromC1}, newTree);
-
-            if (newTree.getDistance() < bestTree.getDistance())
+            for (const auto& vertexFromC1 : components[1])
             {
-                bestTree = newTree;
+                std::uint32_t newDistance = workTree.getDistance() + Edge(vertexFromC0, vertexFromC1).getDistance();
+
+                if (newDistance < oldDistance)
+                {
+                    Graph newTree = workTree;
+                    this->connect({vertexFromC0, vertexFromC1}, newTree);
+                    bestTree = newTree;
+                }
             }
         }
     }

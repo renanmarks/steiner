@@ -29,8 +29,8 @@ private:
 
     Graph tree;
 
-    void removeVertex(Vertex s);
-    void removeSteinerLeafs();
+    void removeVertex(Vertex s, Graph &tree);
+    void removeSteinerLeafs(Graph &graph);
     void buildLocalTrees();
     void connect(const VertexPair &pair, Graph &graph);
     void checkAndCrystalize(const Vertex &steinerNode, Graph &graph);
