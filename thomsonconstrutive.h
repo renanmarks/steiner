@@ -64,8 +64,11 @@ private:
     MinimumDistanceSet minDistanceHeap;
 
     const st::Data* data;
+    bool randomStart;
 
+    VertexPair getRandomDistanceVertices();
     VertexPair getMinDistanceVertices();
+
     void loadVertices();
     void connect(const VertexPair& pair);
 
@@ -74,6 +77,7 @@ private:
 
 public:
     ThomsonConstrutive(const st::Data& _data);
+    ThomsonConstrutive(const st::Data& _data, bool _randomStart);
 
     // IRSTAlgorithm interface
 public:

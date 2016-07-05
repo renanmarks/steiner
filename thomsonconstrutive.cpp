@@ -1,5 +1,35 @@
 #include "thomsonconstrutive.h"
 #include <iostream>
+#include <random>
+
+st::ThomsonConstrutive::VertexPair st::ThomsonConstrutive::getRandomDistanceVertices()
+{
+    if (this->vertexPairSet.size() > 0)
+    {
+        // First node
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_int_distribution<> dist(0, minDistanceHeap.size()-1);
+        std::int32_t value = dist(mt);
+        VertexPair pair;
+
+        for (std::int32_t i = 0; i < value; i++)
+        {
+            pair = minDistanceHeap.top();
+            const auto it = this->vertexPairSet.find(pair);
+
+            if (it != this->vertexPairSet.end() )
+            {
+                this->vertexPairSet.erase( it );
+                minDistanceHeap.pop();
+            }
+        }
+
+        return pair;
+    }
+
+    return VertexPair(Vertex(), Vertex());
+}
 
 st::ThomsonConstrutive::VertexPair st::ThomsonConstrutive::getMinDistanceVertices()
 {
@@ -114,7 +144,13 @@ void st::ThomsonConstrutive::connect(const st::ThomsonConstrutive::VertexPair &p
 }
 
 st::ThomsonConstrutive::ThomsonConstrutive(const st::Data &_data)
-    : graph(_data.terminal.terminals.size()), vertexPairSet(), data(&_data)
+    : ThomsonConstrutive(_data, false)
+{
+
+}
+
+st::ThomsonConstrutive::ThomsonConstrutive(const st::Data &_data, bool _randomStart)
+    : graph(_data.terminal.terminals.size()), vertexPairSet(), data(&_data), randomStart(_randomStart)
 {
     loadVertices();
 }
@@ -130,7 +166,17 @@ st::Graph st::ThomsonConstrutive::run()
 
     while (this->graph.getNumberOfComponents() > 1)
     {
-        VertexPair pair = getMinDistanceVertices();
+        VertexPair pair;
+
+        if (this->randomStart == false)
+        {
+            pair = getMinDistanceVertices();
+        }
+        else
+        {
+            pair = getRandomDistanceVertices();
+            this->randomStart = false;
+        }
 
         if (this->graph.areOnSameComponent(pair.first, pair.second) == false)
         {
