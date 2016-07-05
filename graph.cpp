@@ -44,7 +44,7 @@ st::Graph::Graph()
 }
 
 st::Graph::Graph(uint32_t nVertices)
-    : graph(nVertices), distanceBalance(0), disjointSet(graph)
+    : graph(nVertices), totalDistance(0), disjointSet(graph)
 {
 
 }
@@ -172,6 +172,7 @@ void st::Graph::addEdge(const st::Graph::Edge &e)
     const auto ed = boost::add_edge(sd, td, this->graph);
     this->graph[ed.first] = e;
     this->disjointSet.ds.union_set(sd, td);
+    this->totalDistance += e.getDistance();
 }
 
 void st::Graph::updateEdge(const st::Graph::Edge &old, const st::Graph::Edge &newEdge)
@@ -190,6 +191,7 @@ void st::Graph::removeEdge(const st::Graph::Edge &e)
     if (ed.second == true)
     {
         boost::remove_edge(sd, td, this->graph);
+        this->totalDistance -= e.getDistance();
         this->setup();
     }
 }
@@ -313,14 +315,7 @@ bool st::Graph::areOnSameComponent(const st::Graph::Vertex &v1, const st::Graph:
 
 uint32_t st::Graph::getDistance() const
 {
-    std::int32_t distance = 0;
-
-    for (const auto e : this->getEdges())
-    {
-        distance += e.getDistance();
-    }
-
-    return distance;
+    return this->totalDistance;
 }
 
 void st::Graph::print() const

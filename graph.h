@@ -89,7 +89,7 @@ private:
     using BoostGraph = boost::adjacency_list<boost::setS, boost::vecS, boost::undirectedS, Vertex, Edge>;
     BoostGraph graph;
 
-    std::int32_t distanceBalance;
+    std::int32_t totalDistance;
 
     struct DisjointSetData
     {
