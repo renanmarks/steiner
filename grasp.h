@@ -9,12 +9,11 @@ namespace st
 class Grasp : public st::IRSTAlgorithm
 {
 private:
-    const st::Data& data;
     IRSTAlgorithm& construtive;
     std::uint32_t numberIterations;
 
 public:
-    Grasp(const st::Data& _data, IRSTAlgorithm& _construtive, std::uint32_t _numberIterations);
+    Grasp(IRSTAlgorithm& _construtive, std::uint32_t _numberIterations);
 
     // IRSTAlgorithm interface
 public:

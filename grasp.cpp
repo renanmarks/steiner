@@ -2,8 +2,8 @@
 #include "edgeorientedlocalsearch.h"
 
 
-st::Grasp::Grasp(const st::Data &_data, st::IRSTAlgorithm &_construtive, uint32_t _numberIterations)
-    : data(_data), construtive(_construtive), numberIterations(_numberIterations)
+st::Grasp::Grasp(st::IRSTAlgorithm &_construtive, uint32_t _numberIterations)
+    : construtive(_construtive), numberIterations(_numberIterations)
 {
 
 }
